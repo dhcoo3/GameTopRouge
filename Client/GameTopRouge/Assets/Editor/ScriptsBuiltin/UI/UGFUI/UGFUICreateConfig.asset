@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:yousandi.cn,2023:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ca484624fc9a6c479f854bf978ce8ba, type: 3}
+  m_Name: UGFUICreateConfig
+  m_EditorClassIdentifier: 
+  ButtonOnClickId: 0
+  ButtonTransition: 3
+  ButtonAnimatorController: {fileID: 9100000, guid: 2566d1e752561ae4cb3fcc5fa870faca, type: 2}
+  ButtonDefaultImage2: {fileID: 21300000, guid: 1cf2faf2c1703854483a874095c10a55, type: 3}
+  DefaultFont: {fileID: 12800000, guid: e3265ab4bf004d28a9537516768c1c75, type: 3}
+  InputFieldDefaultBgImage: {fileID: 0}
+  SliderDefaultBgImage: {fileID: 0}
+  SliderDefaultBgImage2: {fileID: 0}

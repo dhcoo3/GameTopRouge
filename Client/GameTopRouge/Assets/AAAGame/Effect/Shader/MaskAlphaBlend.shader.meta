@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: 6a79d222705c18346aafce8ce1e8f3ba
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  preprocessorOverride: 0
+  userData: 
+  assetBundleName: assets/art/effect/shader/maskalphablend.shader.unity3d
+  assetBundleVariant: 

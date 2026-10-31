@@ -1,0 +1,102 @@
+%YAML 1.1
+%TAG !u! tag:yousandi.cn,2023:
+--- !u!1 &2676959425152374655
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 7
+  m_Component:
+  - component: {fileID: 4326433423185600214}
+  - component: {fileID: 3686512011463711377}
+  - component: {fileID: 2252178610148252115}
+  m_Layer: 0
+  m_HasEditorInfo: 1
+  m_Name: QuestBriefingPanel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4326433423185600214
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2676959425152374655}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &3686512011463711377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2676959425152374655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3a65a516a2662644a236b4c6de092f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mUIContainerDict:
+    _Buckets: ffffffffffffffffffffffff
+    _HashCodes: 000000000000000000000000
+    _Next: 000000000000000000000000
+    _Count: 0
+    _Version: 0
+    _FreeList: -1
+    _FreeCount: 0
+    _Keys:
+    - 
+    - 
+    - 
+    _Values:
+    - NodeName: 
+      NodeObj: {fileID: 0}
+      NodeType: 
+      Domain: 
+    - NodeName: 
+      NodeObj: {fileID: 0}
+      NodeType: 
+      Domain: 
+    - NodeName: 
+      NodeObj: {fileID: 0}
+      NodeType: 
+      Domain: 
+--- !u!114 &2252178610148252115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2676959425152374655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbc744ce57d8949c58a00d509a8b2dc7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UIModel: 0
+  SynTextFont: 0
+  Layers: 1
+  OpenFade: 1
+  AutoDepthChanged: 1
+  OpenSoundId: 0
+  CloseSoundId: 0
+  AddCanvasGroup: 1
+  AddGraphicRaycaster: 1
+  OpenAnim: 0
+  CloseAnim: 0
+  OpenAnimStateName: 
+  CloseAnimStateName: 

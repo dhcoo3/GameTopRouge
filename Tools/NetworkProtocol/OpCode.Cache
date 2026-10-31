@@ -1,0 +1,21 @@
+// Fantasy OpCode cache. Generated automatically; do not edit manually.
+C2G_CreateFrameRoom = 268445459
+C2G_FrameAck = 134227732
+C2G_FrameFetchRequest = 134227735
+C2G_FrameSyncRequest = 134227733
+C2G_JoinFrameRoom = 268445460
+C2G_LoadPlayerProgress = 268445461
+C2G_LoginRequest = 268445458
+C2G_NextFrameCommand = 134227731
+C2G_SubmitPlayerProgressEvent = 268445462
+C2G_TestMessage = 134227729
+C2G_TestRequest = 268445457
+G2C_CreateFrameRoom = 402663187
+G2C_FrameCommand = 134227730
+G2C_FrameMatchBootstrap = 134227734
+G2C_JoinFrameRoom = 402663188
+G2C_LoadPlayerProgress = 402663189
+G2C_LoginResponse = 402663186
+G2C_LoginRevoked = 134227736
+G2C_SubmitPlayerProgressEvent = 402663190
+G2C_TestResponse = 402663185

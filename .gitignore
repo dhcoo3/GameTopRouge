@@ -1,0 +1,22 @@
+**/[Ll]ibrary/
+**/[Tt]emp/
+**/[Oo]bj/
+**/[Ll]ogs/
+**/[Uu]ser[Ss]ettings/
+**/[Bb]uild/
+**/[Bb]uilds/
+**/node_modules/
+.vs/
+.idea/
+.DS_Store
+/Client/GameTopRouge/*.csproj
+/Client/GameTopRouge/*.sln
+*.user
+
+# Server build outputs
+/Server/**/[Bb]in/
+
+# Unity generated toolchains and release outputs
+/Client/GameTopRouge/HybridCLRData/
+/Client/GameTopRouge/HotUpdateRes/
+/Client/GameTopRouge/Release/

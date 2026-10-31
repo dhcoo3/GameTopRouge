@@ -1,0 +1,2026 @@
+{
+  "scene": "Assets/AAAGame/Scene/Fight/1000.scene",
+  "grid": {
+    "width": 20,
+    "height": 26,
+    "cellSize": [
+      1.0,
+      0.5
+    ],
+    "isometric": true,
+    "worldOrigin": [
+      10.0,
+      -6.75
+    ],
+    "sceneCellOrigin": [
+      -4,
+      -24
+    ]
+  },
+  "roadCells": [
+    [
+      0,
+      5
+    ],
+    [
+      1,
+      5
+    ],
+    [
+      2,
+      5
+    ],
+    [
+      3,
+      5
+    ],
+    [
+      4,
+      5
+    ],
+    [
+      0,
+      6
+    ],
+    [
+      1,
+      6
+    ],
+    [
+      2,
+      6
+    ],
+    [
+      3,
+      6
+    ],
+    [
+      4,
+      6
+    ],
+    [
+      3,
+      7
+    ],
+    [
+      4,
+      7
+    ],
+    [
+      5,
+      7
+    ],
+    [
+      6,
+      7
+    ],
+    [
+      7,
+      7
+    ],
+    [
+      9,
+      7
+    ],
+    [
+      3,
+      8
+    ],
+    [
+      4,
+      8
+    ],
+    [
+      5,
+      8
+    ],
+    [
+      6,
+      8
+    ],
+    [
+      7,
+      8
+    ],
+    [
+      9,
+      8
+    ],
+    [
+      6,
+      9
+    ],
+    [
+      7,
+      9
+    ],
+    [
+      9,
+      9
+    ],
+    [
+      6,
+      10
+    ],
+    [
+      7,
+      10
+    ],
+    [
+      8,
+      10
+    ],
+    [
+      9,
+      10
+    ],
+    [
+      10,
+      10
+    ],
+    [
+      11,
+      10
+    ],
+    [
+      12,
+      10
+    ],
+    [
+      13,
+      10
+    ],
+    [
+      6,
+      11
+    ],
+    [
+      7,
+      11
+    ],
+    [
+      8,
+      11
+    ],
+    [
+      9,
+      11
+    ],
+    [
+      10,
+      11
+    ],
+    [
+      11,
+      11
+    ],
+    [
+      12,
+      11
+    ],
+    [
+      13,
+      11
+    ],
+    [
+      7,
+      12
+    ],
+    [
+      8,
+      12
+    ],
+    [
+      9,
+      12
+    ],
+    [
+      10,
+      12
+    ],
+    [
+      11,
+      12
+    ],
+    [
+      12,
+      12
+    ],
+    [
+      13,
+      12
+    ],
+    [
+      7,
+      13
+    ],
+    [
+      8,
+      13
+    ],
+    [
+      9,
+      13
+    ],
+    [
+      10,
+      13
+    ],
+    [
+      11,
+      13
+    ],
+    [
+      12,
+      13
+    ],
+    [
+      13,
+      13
+    ],
+    [
+      14,
+      13
+    ],
+    [
+      15,
+      13
+    ],
+    [
+      16,
+      13
+    ],
+    [
+      5,
+      14
+    ],
+    [
+      6,
+      14
+    ],
+    [
+      7,
+      14
+    ],
+    [
+      8,
+      14
+    ],
+    [
+      9,
+      14
+    ],
+    [
+      10,
+      14
+    ],
+    [
+      11,
+      14
+    ],
+    [
+      12,
+      14
+    ],
+    [
+      13,
+      14
+    ],
+    [
+      14,
+      14
+    ],
+    [
+      15,
+      14
+    ],
+    [
+      16,
+      14
+    ],
+    [
+      5,
+      15
+    ],
+    [
+      13,
+      15
+    ],
+    [
+      15,
+      15
+    ],
+    [
+      16,
+      15
+    ],
+    [
+      5,
+      16
+    ],
+    [
+      13,
+      16
+    ],
+    [
+      15,
+      16
+    ],
+    [
+      16,
+      16
+    ],
+    [
+      17,
+      16
+    ],
+    [
+      18,
+      16
+    ],
+    [
+      19,
+      16
+    ],
+    [
+      5,
+      17
+    ],
+    [
+      13,
+      17
+    ],
+    [
+      14,
+      17
+    ],
+    [
+      15,
+      17
+    ],
+    [
+      16,
+      17
+    ],
+    [
+      17,
+      17
+    ],
+    [
+      18,
+      17
+    ],
+    [
+      19,
+      17
+    ]
+  ],
+  "houses": [
+    {
+      "name": "House_01_RuinedCottage",
+      "asset": "Buildings/House_01_RuinedCottage.png",
+      "grid": [
+        3,
+        22
+      ],
+      "footprint": [
+        1,
+        4,
+        21,
+        24
+      ],
+      "scale": 0.85
+    },
+    {
+      "name": "House_02_Inn",
+      "asset": "Buildings/House_02_Inn.png",
+      "grid": [
+        16,
+        22
+      ],
+      "footprint": [
+        14,
+        17,
+        21,
+        24
+      ],
+      "scale": 0.85
+    },
+    {
+      "name": "House_03_Shrine",
+      "asset": "Buildings/House_03_Shrine.png",
+      "grid": [
+        3,
+        2
+      ],
+      "footprint": [
+        1,
+        4,
+        1,
+        4
+      ],
+      "scale": 0.85
+    },
+    {
+      "name": "House_04_Cottage",
+      "asset": "Buildings/House_04_Cottage.png",
+      "grid": [
+        16,
+        2
+      ],
+      "footprint": [
+        14,
+        17,
+        1,
+        4
+      ],
+      "scale": 0.85
+    }
+  ],
+  "yards": [
+    {
+      "name": "NorthwestYard",
+      "bounds": [
+        0,
+        6,
+        19,
+        25
+      ],
+      "gate": [
+        3,
+        19
+      ],
+      "gateOpening": [
+        [
+          2,
+          19
+        ],
+        [
+          3,
+          19
+        ],
+        [
+          4,
+          19
+        ]
+      ]
+    },
+    {
+      "name": "NortheastYard",
+      "bounds": [
+        13,
+        19,
+        19,
+        25
+      ],
+      "gate": [
+        16,
+        19
+      ],
+      "gateOpening": [
+        [
+          15,
+          19
+        ],
+        [
+          16,
+          19
+        ],
+        [
+          17,
+          19
+        ]
+      ]
+    },
+    {
+      "name": "SouthwestYard",
+      "bounds": [
+        0,
+        6,
+        0,
+        6
+      ],
+      "gate": [
+        4,
+        6
+      ],
+      "gateOpening": [
+        [
+          3,
+          6
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          5,
+          6
+        ]
+      ]
+    },
+    {
+      "name": "SoutheastYard",
+      "bounds": [
+        13,
+        19,
+        0,
+        6
+      ],
+      "gate": [
+        15,
+        6
+      ],
+      "gateOpening": [
+        [
+          14,
+          6
+        ],
+        [
+          15,
+          6
+        ],
+        [
+          16,
+          6
+        ]
+      ]
+    }
+  ],
+  "props": [
+    {
+      "name": "Village_Well",
+      "asset": "Props/Well.png",
+      "grid": [
+        10,
+        13
+      ],
+      "scale": 0.8
+    },
+    {
+      "name": "LanternPost_West",
+      "asset": "Props/LanternPost.png",
+      "grid": [
+        6,
+        16
+      ],
+      "scale": 0.75
+    },
+    {
+      "name": "LanternPost_East",
+      "asset": "Props/LanternPost.png",
+      "grid": [
+        14,
+        7
+      ],
+      "scale": 0.75
+    },
+    {
+      "name": "Barrels_By_Gate",
+      "asset": "Props/Barrels.png",
+      "grid": [
+        5,
+        18
+      ],
+      "scale": 0.75
+    },
+    {
+      "name": "Cart_Along_Road",
+      "asset": "Props/Cart.png",
+      "grid": [
+        10,
+        16
+      ],
+      "scale": 0.75
+    },
+    {
+      "name": "DeadTree_West",
+      "asset": "Props/DeadTree.png",
+      "grid": [
+        1,
+        8
+      ],
+      "scale": 0.85
+    }
+  ],
+  "backdrop": [
+    {
+      "name": "DarkRidge_North",
+      "asset": "Backdrop/DarkRidge.png",
+      "world": [
+        8.5,
+        4.1
+      ],
+      "scale": [
+        4.2,
+        1.5
+      ]
+    },
+    {
+      "name": "DarkRidge_South",
+      "asset": "Backdrop/DarkRidge.png",
+      "world": [
+        8.5,
+        -7.0
+      ],
+      "scale": [
+        4.2,
+        1.5
+      ]
+    }
+  ],
+  "spawnGrids": [
+    [
+      8,
+      11
+    ],
+    [
+      10,
+      11
+    ],
+    [
+      8,
+      13
+    ],
+    [
+      10,
+      13
+    ]
+  ],
+  "blockedCells": [
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      1
+    ],
+    [
+      0,
+      2
+    ],
+    [
+      0,
+      3
+    ],
+    [
+      0,
+      4
+    ],
+    [
+      0,
+      19
+    ],
+    [
+      0,
+      20
+    ],
+    [
+      0,
+      21
+    ],
+    [
+      0,
+      22
+    ],
+    [
+      0,
+      23
+    ],
+    [
+      0,
+      24
+    ],
+    [
+      0,
+      25
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      1,
+      2
+    ],
+    [
+      1,
+      3
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      1,
+      19
+    ],
+    [
+      1,
+      21
+    ],
+    [
+      1,
+      22
+    ],
+    [
+      1,
+      23
+    ],
+    [
+      1,
+      24
+    ],
+    [
+      1,
+      25
+    ],
+    [
+      2,
+      0
+    ],
+    [
+      2,
+      1
+    ],
+    [
+      2,
+      2
+    ],
+    [
+      2,
+      3
+    ],
+    [
+      2,
+      4
+    ],
+    [
+      2,
+      21
+    ],
+    [
+      2,
+      22
+    ],
+    [
+      2,
+      23
+    ],
+    [
+      2,
+      24
+    ],
+    [
+      2,
+      25
+    ],
+    [
+      3,
+      0
+    ],
+    [
+      3,
+      1
+    ],
+    [
+      3,
+      2
+    ],
+    [
+      3,
+      3
+    ],
+    [
+      3,
+      4
+    ],
+    [
+      3,
+      21
+    ],
+    [
+      3,
+      22
+    ],
+    [
+      3,
+      23
+    ],
+    [
+      3,
+      24
+    ],
+    [
+      3,
+      25
+    ],
+    [
+      4,
+      0
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      4,
+      2
+    ],
+    [
+      4,
+      3
+    ],
+    [
+      4,
+      4
+    ],
+    [
+      4,
+      21
+    ],
+    [
+      4,
+      22
+    ],
+    [
+      4,
+      23
+    ],
+    [
+      4,
+      24
+    ],
+    [
+      4,
+      25
+    ],
+    [
+      5,
+      0
+    ],
+    [
+      5,
+      19
+    ],
+    [
+      5,
+      25
+    ],
+    [
+      6,
+      0
+    ],
+    [
+      6,
+      1
+    ],
+    [
+      6,
+      2
+    ],
+    [
+      6,
+      3
+    ],
+    [
+      6,
+      4
+    ],
+    [
+      6,
+      5
+    ],
+    [
+      6,
+      6
+    ],
+    [
+      6,
+      19
+    ],
+    [
+      6,
+      20
+    ],
+    [
+      6,
+      21
+    ],
+    [
+      6,
+      22
+    ],
+    [
+      6,
+      23
+    ],
+    [
+      6,
+      24
+    ],
+    [
+      6,
+      25
+    ],
+    [
+      13,
+      0
+    ],
+    [
+      13,
+      1
+    ],
+    [
+      13,
+      2
+    ],
+    [
+      13,
+      3
+    ],
+    [
+      13,
+      4
+    ],
+    [
+      13,
+      5
+    ],
+    [
+      13,
+      6
+    ],
+    [
+      13,
+      19
+    ],
+    [
+      13,
+      20
+    ],
+    [
+      13,
+      21
+    ],
+    [
+      13,
+      22
+    ],
+    [
+      13,
+      23
+    ],
+    [
+      13,
+      24
+    ],
+    [
+      13,
+      25
+    ],
+    [
+      14,
+      0
+    ],
+    [
+      14,
+      1
+    ],
+    [
+      14,
+      2
+    ],
+    [
+      14,
+      3
+    ],
+    [
+      14,
+      4
+    ],
+    [
+      14,
+      19
+    ],
+    [
+      14,
+      21
+    ],
+    [
+      14,
+      22
+    ],
+    [
+      14,
+      23
+    ],
+    [
+      14,
+      24
+    ],
+    [
+      14,
+      25
+    ],
+    [
+      15,
+      0
+    ],
+    [
+      15,
+      1
+    ],
+    [
+      15,
+      2
+    ],
+    [
+      15,
+      3
+    ],
+    [
+      15,
+      4
+    ],
+    [
+      15,
+      21
+    ],
+    [
+      15,
+      22
+    ],
+    [
+      15,
+      23
+    ],
+    [
+      15,
+      24
+    ],
+    [
+      15,
+      25
+    ],
+    [
+      16,
+      0
+    ],
+    [
+      16,
+      1
+    ],
+    [
+      16,
+      2
+    ],
+    [
+      16,
+      3
+    ],
+    [
+      16,
+      4
+    ],
+    [
+      16,
+      21
+    ],
+    [
+      16,
+      22
+    ],
+    [
+      16,
+      23
+    ],
+    [
+      16,
+      24
+    ],
+    [
+      16,
+      25
+    ],
+    [
+      17,
+      0
+    ],
+    [
+      17,
+      1
+    ],
+    [
+      17,
+      2
+    ],
+    [
+      17,
+      3
+    ],
+    [
+      17,
+      4
+    ],
+    [
+      17,
+      6
+    ],
+    [
+      17,
+      21
+    ],
+    [
+      17,
+      22
+    ],
+    [
+      17,
+      23
+    ],
+    [
+      17,
+      24
+    ],
+    [
+      17,
+      25
+    ],
+    [
+      18,
+      0
+    ],
+    [
+      18,
+      6
+    ],
+    [
+      18,
+      19
+    ],
+    [
+      18,
+      25
+    ],
+    [
+      19,
+      0
+    ],
+    [
+      19,
+      1
+    ],
+    [
+      19,
+      2
+    ],
+    [
+      19,
+      3
+    ],
+    [
+      19,
+      4
+    ],
+    [
+      19,
+      5
+    ],
+    [
+      19,
+      6
+    ],
+    [
+      19,
+      19
+    ],
+    [
+      19,
+      20
+    ],
+    [
+      19,
+      21
+    ],
+    [
+      19,
+      22
+    ],
+    [
+      19,
+      23
+    ],
+    [
+      19,
+      24
+    ],
+    [
+      19,
+      25
+    ]
+  ],
+  "pathConnectivity": {
+    "roadCells": 89,
+    "roadComponents": 1,
+    "blockedRoadCells": 0,
+    "walkableComponents": 1,
+    "walkableCells": 376,
+    "agentRadius": 0.25,
+    "clearanceWalkableCells": 261,
+    "clearanceComponents": 1,
+    "clearanceRoadCells": 80,
+    "gateOpenings": 4
+  },
+  "sceneFenceObjects": [
+    {
+      "name": "Yard_01_Corner_1",
+      "asset": "Fence/Corner.png",
+      "world": [
+        0.5,
+        -2.0
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_01_Corner_2",
+      "asset": "Fence/Corner_L.png",
+      "world": [
+        3.5,
+        -0.5
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_01_Corner_3",
+      "asset": "Fence/Corner.png",
+      "world": [
+        0.5,
+        1.0
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_01_Corner_4",
+      "asset": "Fence/Corner_L.png",
+      "world": [
+        -2.5,
+        -0.5
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_01_South_Rail_1",
+      "asset": "Fence/Straight_A.png",
+      "world": [
+        1.1500000000000004,
+        -1.6749999999999998
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_01_South_Rail_3",
+      "asset": "Fence/Straight_A.png",
+      "world": [
+        2.8499999999999996,
+        -0.8250000000000002
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_01_North_Rail_1",
+      "asset": "Fence/Straight_A.png",
+      "world": [
+        -1.8499999999999996,
+        -0.17499999999999982
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_01_North_Rail_2",
+      "asset": "Fence/Straight_A.png",
+      "world": [
+        -1.0,
+        0.25
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_01_North_Rail_3",
+      "asset": "Fence/Straight_A.png",
+      "world": [
+        -0.15000000000000036,
+        0.6749999999999998
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_01_West_Rail_1",
+      "asset": "Fence/Straight_B.png",
+      "world": [
+        -0.15000000000000036,
+        -1.6749999999999998
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_01_West_Rail_2",
+      "asset": "Fence/Broken.png",
+      "world": [
+        -1.0,
+        -1.25
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_01_West_Rail_3",
+      "asset": "Fence/Straight_B.png",
+      "world": [
+        -1.8499999999999996,
+        -0.8250000000000002
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_01_East_Rail_1",
+      "asset": "Fence/Straight_B.png",
+      "world": [
+        2.8499999999999996,
+        -0.17499999999999982
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_01_East_Rail_2",
+      "asset": "Fence/Straight_B.png",
+      "world": [
+        2.0,
+        0.25
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_01_East_Rail_3",
+      "asset": "Fence/Straight_B.png",
+      "world": [
+        1.1500000000000004,
+        0.6749999999999998
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_01_Gate",
+      "asset": "Fence/Gate.png",
+      "world": [
+        2.0,
+        -1.25
+      ],
+      "scale": [
+        0.5,
+        0.5
+      ],
+      "grid": [
+        3,
+        19
+      ]
+    },
+    {
+      "name": "Yard_02_Corner_1",
+      "asset": "Fence/Corner.png",
+      "world": [
+        7.0,
+        1.25
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_02_Corner_2",
+      "asset": "Fence/Corner_L.png",
+      "world": [
+        10.0,
+        2.75
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_02_Corner_3",
+      "asset": "Fence/Corner.png",
+      "world": [
+        7.0,
+        4.25
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_02_Corner_4",
+      "asset": "Fence/Corner_L.png",
+      "world": [
+        4.0,
+        2.75
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_02_South_Rail_1",
+      "asset": "Fence/Straight_A.png",
+      "world": [
+        7.65,
+        1.5749999999999993
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_02_South_Rail_3",
+      "asset": "Fence/Straight_A.png",
+      "world": [
+        9.35,
+        2.4250000000000007
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_02_North_Rail_1",
+      "asset": "Fence/Straight_A.png",
+      "world": [
+        4.65,
+        3.0749999999999993
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_02_North_Rail_2",
+      "asset": "Fence/Straight_A.png",
+      "world": [
+        5.5,
+        3.5
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_02_North_Rail_3",
+      "asset": "Fence/Straight_A.png",
+      "world": [
+        6.35,
+        3.9250000000000007
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_02_West_Rail_1",
+      "asset": "Fence/Straight_B.png",
+      "world": [
+        6.35,
+        1.5749999999999993
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_02_West_Rail_2",
+      "asset": "Fence/Straight_B.png",
+      "world": [
+        5.5,
+        2.0
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_02_West_Rail_3",
+      "asset": "Fence/Straight_B.png",
+      "world": [
+        4.65,
+        2.4250000000000007
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_02_East_Rail_1",
+      "asset": "Fence/Straight_B.png",
+      "world": [
+        9.35,
+        3.0749999999999993
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_02_East_Rail_2",
+      "asset": "Fence/Straight_B.png",
+      "world": [
+        8.5,
+        3.5
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_02_East_Rail_3",
+      "asset": "Fence/Straight_B.png",
+      "world": [
+        7.65,
+        3.9250000000000007
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_02_Gate",
+      "asset": "Fence/Gate.png",
+      "world": [
+        8.5,
+        2.0
+      ],
+      "scale": [
+        0.5,
+        0.5
+      ],
+      "grid": [
+        16,
+        19
+      ]
+    },
+    {
+      "name": "Yard_03_Corner_1",
+      "asset": "Fence/Corner.png",
+      "world": [
+        10.0,
+        -6.75
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_03_Corner_2",
+      "asset": "Fence/Corner_L.png",
+      "world": [
+        13.0,
+        -5.25
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_03_Corner_3",
+      "asset": "Fence/Corner.png",
+      "world": [
+        10.0,
+        -3.75
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_03_Corner_4",
+      "asset": "Fence/Corner_L.png",
+      "world": [
+        7.0,
+        -5.25
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_03_South_Rail_1",
+      "asset": "Fence/Straight_A.png",
+      "world": [
+        10.65,
+        -6.425
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_03_South_Rail_2",
+      "asset": "Fence/Straight_A.png",
+      "world": [
+        11.5,
+        -6.0
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_03_South_Rail_3",
+      "asset": "Fence/Straight_A.png",
+      "world": [
+        12.35,
+        -5.575
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_03_North_Rail_1",
+      "asset": "Fence/Straight_A.png",
+      "world": [
+        7.65,
+        -4.925
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_03_North_Rail_2",
+      "asset": "Fence/Straight_A.png",
+      "world": [
+        8.5,
+        -4.5
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_03_West_Rail_1",
+      "asset": "Fence/Straight_B.png",
+      "world": [
+        9.35,
+        -6.425
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_03_West_Rail_2",
+      "asset": "Fence/Straight_B.png",
+      "world": [
+        8.5,
+        -6.0
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_03_West_Rail_3",
+      "asset": "Fence/Straight_B.png",
+      "world": [
+        7.65,
+        -5.575
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_03_East_Rail_1",
+      "asset": "Fence/Straight_B.png",
+      "world": [
+        12.35,
+        -4.925
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_03_East_Rail_2",
+      "asset": "Fence/Straight_B.png",
+      "world": [
+        11.5,
+        -4.5
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_03_East_Rail_3",
+      "asset": "Fence/Straight_B.png",
+      "world": [
+        10.65,
+        -4.075
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_03_Gate",
+      "asset": "Fence/Gate.png",
+      "world": [
+        9.0,
+        -4.25
+      ],
+      "scale": [
+        0.5,
+        0.5
+      ],
+      "grid": [
+        4,
+        6
+      ]
+    },
+    {
+      "name": "Yard_04_Corner_1",
+      "asset": "Fence/Corner.png",
+      "world": [
+        16.5,
+        -3.5
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_04_Corner_2",
+      "asset": "Fence/Corner_L.png",
+      "world": [
+        19.5,
+        -2.0
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_04_Corner_3",
+      "asset": "Fence/Corner.png",
+      "world": [
+        16.5,
+        -0.5
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_04_Corner_4",
+      "asset": "Fence/Corner_L.png",
+      "world": [
+        13.5,
+        -2.0
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_04_South_Rail_1",
+      "asset": "Fence/Straight_A.png",
+      "world": [
+        17.15,
+        -3.175
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_04_South_Rail_2",
+      "asset": "Fence/Straight_A.png",
+      "world": [
+        18.0,
+        -2.75
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_04_South_Rail_3",
+      "asset": "Fence/Straight_A.png",
+      "world": [
+        18.85,
+        -2.325
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_04_North_Rail_2",
+      "asset": "Fence/Straight_A.png",
+      "world": [
+        15.0,
+        -1.25
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_04_North_Rail_3",
+      "asset": "Fence/Straight_A.png",
+      "world": [
+        15.85,
+        -0.8250000000000002
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_04_West_Rail_1",
+      "asset": "Fence/Straight_B.png",
+      "world": [
+        15.85,
+        -3.175
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_04_West_Rail_2",
+      "asset": "Fence/Straight_B.png",
+      "world": [
+        15.0,
+        -2.75
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_04_West_Rail_3",
+      "asset": "Fence/Straight_B.png",
+      "world": [
+        14.15,
+        -2.325
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_04_East_Rail_1",
+      "asset": "Fence/Straight_B.png",
+      "world": [
+        18.85,
+        -1.6749999999999998
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_04_East_Rail_2",
+      "asset": "Fence/Broken.png",
+      "world": [
+        18.0,
+        -1.25
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_04_East_Rail_3",
+      "asset": "Fence/Straight_B.png",
+      "world": [
+        17.15,
+        -0.8250000000000002
+      ],
+      "scale": [
+        0.75,
+        0.75
+      ]
+    },
+    {
+      "name": "Yard_04_Gate",
+      "asset": "Fence/Gate.png",
+      "world": [
+        14.5,
+        -1.5
+      ],
+      "scale": [
+        0.5,
+        0.5
+      ],
+      "grid": [
+        15,
+        6
+      ]
+    }
+  ]
+}

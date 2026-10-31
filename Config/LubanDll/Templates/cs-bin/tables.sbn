@@ -1,0 +1,30 @@
+using Luban;
+using System.Collections.Generic;
+{{namespace_with_grace_begin __namespace}}
+#if ENABLE_OBFUZ
+[Obfuz.ObfuzIgnore(Obfuz.ObfuzScope.TypeName | Obfuz.ObfuzScope.MethodName)]
+#endif
+public partial class {{__name}}
+{
+    public interface IVOFun
+    {
+        void _LoadData(ByteBuf data);
+
+        void ResolveRef(Tables tables);
+    }
+
+    public Dictionary<string, IVOFun> CfgDic = new Dictionary<string, IVOFun>();
+
+	{{~for table in __tables ~}}
+	public const string {{table.output_data_file}} = "{{table.output_data_file}}";
+    {{~end~}}
+		
+    public {{__name}}()
+    {
+        {{~for table in __tables ~}}
+		  CfgDic.Add("{{table.output_data_file}}",new {{table.full_name}}());
+        {{~end~}}
+    }    
+}
+
+{{namespace_with_grace_end __namespace}}

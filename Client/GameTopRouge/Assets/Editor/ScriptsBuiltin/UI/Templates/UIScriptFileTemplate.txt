@@ -1,0 +1,32 @@
+﻿using UnityEngine;
+using UnityEngine.UI;
+using UnityGameFramework.Runtime;
+#if ENABLE_OBFUZ
+[Obfuz.ObfuzIgnore(Obfuz.ObfuzScope.TypeName)]
+#endif
+public partial class _CLASS_NAME_ : UGF_Panel
+{
+  #region Auto Create 
+  
+  #endregion
+  
+  protected override void OnInit(object userData)
+  {    
+    #region Auto Bind 
+    
+    #endregion
+            
+    #region Auto Event 
+	
+    #endregion
+
+    base.OnInit(userData);
+  }
+  
+  #region Auto Write Event
+  private void OnClickBtr()
+  {
+    
+  }
+  #endregion
+}

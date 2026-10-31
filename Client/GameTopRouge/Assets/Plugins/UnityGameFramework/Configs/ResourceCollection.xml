@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<UnityGameFramework>
+  <ResourceCollection>
+    <Resources>
+      <Resource Name="DataTable/ai_tbaiactiondef" LoadType="4" Packed="False" />
+      <Resource Name="DataTable/ai_tbaigroupdef" LoadType="4" Packed="False" />
+      <Resource Name="DataTable/anim_tbanimdef" LoadType="4" Packed="False" />
+      <Resource Name="DataTable/anim_tbanimgroup" LoadType="4" Packed="False" />
+      <Resource Name="DataTable/chapter_tbmainchapter" LoadType="4" Packed="False" />
+      <Resource Name="DataTable/core_tbentitygrouptable" LoadType="4" Packed="False" />
+      <Resource Name="DataTable/core_tbsoundgrouptable" LoadType="4" Packed="False" />
+      <Resource Name="DataTable/core_tbuigrouptable" LoadType="4" Packed="False" />
+      <Resource Name="DataTable/entity_tbhero" LoadType="4" Packed="False" />
+      <Resource Name="DataTable/entity_tbmonster" LoadType="4" Packed="False" />
+      <Resource Name="DataTable/item_tbitem" LoadType="4" Packed="False" />
+      <Resource Name="DataTable/map_tbmapdata" LoadType="4" Packed="False" />
+      <Resource Name="DataTable/skill_tbaoedef" LoadType="4" Packed="False" />
+      <Resource Name="DataTable/skill_tbbuffdef" LoadType="4" Packed="False" />
+      <Resource Name="DataTable/skill_tbbulletdef" LoadType="4" Packed="False" />
+      <Resource Name="DataTable/skill_tbskillaoedef" LoadType="4" Packed="False" />
+      <Resource Name="DataTable/skill_tbskillbulletdef" LoadType="4" Packed="False" />
+      <Resource Name="DataTable/skill_tbskilldef" LoadType="4" Packed="False" />
+      <Resource Name="DataTable/skill_tbtimelinedef" LoadType="4" Packed="False" />
+      <Resource Name="DataTable/tblocalization" LoadType="4" Packed="False" />
+      <Resource Name="DataTable/ui_tbgamemodule" LoadType="4" Packed="False" />
+      <Resource Name="DataTable/ui_tbreddot" LoadType="4" Packed="False" />
+      <Resource Name="HotfixDlls/Hotfix" LoadType="0" Packed="False" />
+      <Resource Name="HotfixDlls/HotfixFileList" LoadType="0" Packed="False" />
+      <Resource Name="Language/ChineseSimplified" LoadType="0" Packed="False" />
+      <Resource Name="Language/ChineseTraditional" LoadType="0" Packed="False" />
+      <Resource Name="Language/English" LoadType="0" Packed="False" />
+      <Resource Name="Language/Japanese" LoadType="0" Packed="False" />
+      <Resource Name="Language/Korean" LoadType="0" Packed="False" />
+      <Resource Name="Prefabs/Aoe/aoe0" LoadType="0" Packed="False" />
+      <Resource Name="Prefabs/Bullet/normal0" LoadType="0" Packed="False" />
+      <Resource Name="Prefabs/Core/GFExtension" LoadType="0" Packed="False" />
+      <Resource Name="Prefabs/Effect/HitEffect_A" LoadType="0" Packed="False" />
+      <Resource Name="Prefabs/Hero/Hero001" LoadType="0" Packed="False" />
+      <Resource Name="Prefabs/Monster/Monster001" LoadType="0" Packed="False" />
+      <Resource Name="Prefabs/Terrain/Grass" LoadType="0" Packed="False" />
+      <Resource Name="Prefabs/Terrain/Water" LoadType="0" Packed="False" />
+      <Resource Name="Prefabs/UI/FightCommon/DamageTextUI" LoadType="0" Packed="False" />
+      <Resource Name="Prefabs/UI/FightCommon/OverlayFightDamageUI" LoadType="0" Packed="False" />
+      <Resource Name="Prefabs/UI/FightCommon/OverlayFightHudUI" LoadType="0" Packed="False" />
+      <Resource Name="Prefabs/UI/FightCommon/RoleHud" LoadType="0" Packed="False" />
+      <Resource Name="Prefabs/UI/FightMainChapter/FightMainChapterPanel" LoadType="0" Packed="False" />
+      <Resource Name="Prefabs/UI/Login/LoginPanel" LoadType="0" Packed="False" />
+      <Resource Name="Prefabs/UI/Joystick/Joystick" LoadType="0" Packed="False" />
+      <Resource Name="Scene/Fight/1000" LoadType="0" Packed="False" />
+      <Resource Name="Scene/Game" LoadType="0" Packed="False" />
+      <Resource Name="Scene/Launch" LoadType="0" Packed="False" />
+      <Resource Name="ScriptableAssets/Core/AppConfigs" LoadType="0" Packed="False" />
+      <Resource Name="Shader/ASE/FastLit" LoadType="0" Packed="False" />
+      <Resource Name="Shader/TextMeshFont" LoadType="0" Packed="False" />
+      <Resource Name="SharedAssets" LoadType="2" Packed="False" />
+    </Resources>
+    <Assets>
+      <Asset Guid="0145e86d410f83740b5d97906a90bb33" ResourceName="DataTable/chapter_tbmainchapter" />
+      <Asset Guid="034b209892546994d8037e72ca910089" ResourceName="Language/Korean" />
+      <Asset Guid="07794d3ab5509674cbf95a0cca40d52f" ResourceName="SharedAssets" />
+      <Asset Guid="07c7cfcddc15dae43890b23de6df0b03" ResourceName="DataTable/skill_tbbulletdef" />
+      <Asset Guid="0c281215fa58e4346b09d271dc0c4e0d" ResourceName="DataTable/skill_tbskillbulletdef" />
+      <Asset Guid="11e8667a32c756e429ea085c8deed933" ResourceName="SharedAssets" />
+      <Asset Guid="13b0b1255d7d6cf44a4d1987723460ef" ResourceName="ScriptableAssets/Core/AppConfigs" />
+      <Asset Guid="1609e79cc522db84bb8c0d8f990a6e93" ResourceName="DataTable/entity_tbhero" />
+      <Asset Guid="18868d941a71f02498051516873367ce" ResourceName="Scene/Launch" />
+      <Asset Guid="18883705d207aec4d82482188aeb45df" ResourceName="Shader/TextMeshFont" />
+      <Asset Guid="1b946021c4b106a49b04055da311bec0" ResourceName="DataTable/map_tbmapdata" />
+      <Asset Guid="1caa4c6fdc3281642b46f7c82c497dc5" ResourceName="Prefabs/Core/GFExtension" />
+      <Asset Guid="230b0c809e3e6a647af26c803aa90467" ResourceName="SharedAssets" />
+      <Asset Guid="2abfccc4490add647af4634431ed1d05" ResourceName="Prefabs/Bullet/normal0" />
+      <Asset Guid="2cdf1b85fd520ef46b11f580e9443e78" ResourceName="Language/ChineseSimplified" />
+      <Asset Guid="2d9b17bfb83329642a64f6c2ebbe0fa3" ResourceName="Prefabs/UI/FightMainChapter/FightMainChapterPanel" />
+      <Asset Guid="366efd9f5e6688e42b2f6be99f039820" ResourceName="DataTable/skill_tbskillaoedef" />
+      <Asset Guid="3c8c89fcf0b204f4ca2c54205feb425f" ResourceName="DataTable/ui_tbgamemodule" />
+      <Asset Guid="4478ce01b2037cb47aade3d8ae0d236a" ResourceName="SharedAssets" />
+      <Asset Guid="50b24863d6ba45048beefab82dd19abb" ResourceName="Prefabs/Monster/Monster001" />
+      <Asset Guid="53b9781b792f33841a6a088ec392fbd8" ResourceName="SharedAssets" />
+      <Asset Guid="573539df9287e89469485ede9e2aa707" ResourceName="DataTable/core_tbentitygrouptable" />
+      <Asset Guid="57a6188eb35e3f049adf676db8c22c8f" ResourceName="DataTable/ai_tbaiactiondef" />
+      <Asset Guid="588ff96c6882fb3448095d7a881bced3" ResourceName="SharedAssets" />
+      <Asset Guid="5934e344566de2a41a15da1c5f8bbfac" ResourceName="DataTable/skill_tbbuffdef" />
+      <Asset Guid="5f1c31b193f3f5e48a9c69c78a089d51" ResourceName="DataTable/skill_tbaoedef" />
+      <Asset Guid="6231849b10dc2d349aca6eec5a714c4d" ResourceName="Scene/Fight/1000" />
+      <Asset Guid="631418efe0201f948a9f112884b8baa2" ResourceName="SharedAssets" />
+      <Asset Guid="6640f3079b7cf1b449fb34c118a532d4" ResourceName="DataTable/anim_tbanimdef" />
+      <Asset Guid="67be1550afa2f884c929c7fb9f2183a7" ResourceName="DataTable/skill_tbtimelinedef" />
+      <Asset Guid="68e6db2ebdc24f95958faec2be5558d6" ResourceName="SharedAssets" />
+      <Asset Guid="6a79d222705c18346aafce8ce1e8f3ba" ResourceName="SharedAssets" />
+      <Asset Guid="6b1ec033b3a4fa344990c858160f876e" ResourceName="DataTable/entity_tbmonster" />
+      <Asset Guid="6be38d7fc85a442489bc513d73291793" ResourceName="HotfixDlls/HotfixFileList" />
+      <Asset Guid="6d3bcb5edbf4a6a44aced98512c535a8" ResourceName="DataTable/ai_tbaigroupdef" />
+      <Asset Guid="6efbebdc008527646894d08b14d0baab" ResourceName="Prefabs/Terrain/Grass" />
+      <Asset Guid="717ed55fed673e1429b2ddd63d7692e0" ResourceName="SharedAssets" />
+      <Asset Guid="7195e7de95bbc0c4592b869e7a6e59fe" ResourceName="Prefabs/Aoe/aoe0" />
+      <Asset Guid="74b06ad59906133448a2fe06366e4889" ResourceName="Language/Japanese" />
+      <Asset Guid="77d7add4503702a4eb05977815994e96" ResourceName="DataTable/core_tbuigrouptable" />
+      <Asset Guid="7b8b206d8bc37e149b97f5433fab029f" ResourceName="HotfixDlls/Hotfix" />
+      <Asset Guid="7bc635d9a0830a54cafd2a453499dc05" ResourceName="DataTable/item_tbitem" />
+      <Asset Guid="7c51ae40c07f9204582d70bcf9813d49" ResourceName="Prefabs/UI/FightCommon/OverlayFightHudUI" />
+      <Asset Guid="7ef3b26961639324da8a09be4785d7a8" ResourceName="SharedAssets" />
+      <Asset Guid="7f1f473485e4e8847947c9f06434dca8" ResourceName="Prefabs/Hero/Hero001" />
+      <Asset Guid="819a1512360ccee4192ac843a00d66ae" ResourceName="Prefabs/UI/FightCommon/RoleHud" />
+      <Asset Guid="83bdadb9e1d24a94e8498def13d4804c" ResourceName="Language/English" />
+      <Asset Guid="84a6440c0fd8e974e8986ff4df2d489f" ResourceName="Language/ChineseTraditional" />
+      <Asset Guid="8a4e2875174034b4aabb43c9ca9028a1" ResourceName="SharedAssets" />
+      <Asset Guid="8ce080d6b39aa264a98b2fb6ddd59b21" ResourceName="Shader/ASE/FastLit" />
+      <Asset Guid="908dde798f242374faea33a8eb415104" ResourceName="Prefabs/UI/Login/LoginPanel" />
+      <Asset Guid="a29db755b6ae1104a94df297de29cfc8" ResourceName="SharedAssets" />
+      <Asset Guid="a7c998bd749cbd34c9b2499f086233ce" ResourceName="Prefabs/UI/FightCommon/OverlayFightDamageUI" />
+      <Asset Guid="b8f790017d833da45a5aec7344ed4f97" ResourceName="SharedAssets" />
+      <Asset Guid="ba600c1c127c1e3449fa11548c03445e" ResourceName="Prefabs/UI/FightCommon/DamageTextUI" />
+      <Asset Guid="ba8f7a798e9643243b23473f6d7cfbd4" ResourceName="Prefabs/Effect/HitEffect_A" />
+      <Asset Guid="bb9a9bffb2a3b7944814ffce13a2a0fa" ResourceName="SharedAssets" />
+      <Asset Guid="bf92700280706df4aac66538024363da" ResourceName="Prefabs/Terrain/Water" />
+      <Asset Guid="ca4765c7a3113644e9f87e202a7ff91d" ResourceName="Scene/Game" />
+      <Asset Guid="ca80677f907dcbe4d84d7cbe44dd3ff6" ResourceName="Prefabs/UI/Joystick/Joystick" />
+      <Asset Guid="caa94edb6d4496a45a00a11fe69e05e8" ResourceName="DataTable/tblocalization" />
+      <Asset Guid="d2dc9a6c375aacb45af0bed484ae0b60" ResourceName="SharedAssets" />
+      <Asset Guid="d680763d485b98d42b73fc12b634bff9" ResourceName="DataTable/skill_tbskilldef" />
+      <Asset Guid="e3265ab4bf004d28a9537516768c1c75" ResourceName="SharedAssets" />
+      <Asset Guid="ea1796d0b9d8172409ec7170982ce993" ResourceName="DataTable/core_tbsoundgrouptable" />
+      <Asset Guid="ef420f39e936da64fab650a3424cdab9" ResourceName="DataTable/anim_tbanimgroup" />
+      <Asset Guid="f9c0f31dcdc12e04f82b241e5f049548" ResourceName="DataTable/ui_tbreddot" />
+    </Assets>
+  </ResourceCollection>
+</UnityGameFramework>

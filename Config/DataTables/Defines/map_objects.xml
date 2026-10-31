@@ -1,0 +1,15 @@
+<module name="Map">
+  <enum name="ObjectType">
+    <var name="TaskMarker" value="1" comment="任务标识"/>
+    <var name="SceneProp" value="2" comment="场景道具"/>
+  </enum>
+  <bean name="ObjectPlacement" sep=",">
+    <var name="instanceId" type="int"/>
+    <var name="objectId" type="int"/>
+    <var name="x" type="float"/><var name="y" type="float"/><var name="z" type="float"/>
+    <var name="rotationZ" type="float"/>
+    <var name="scaleX" type="float"/><var name="scaleY" type="float"/><var name="scaleZ" type="float"/>
+    <var name="radius" type="float"/>
+    <var name="objectiveId" type="int"/>
+  </bean>
+</module>

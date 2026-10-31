@@ -1,0 +1,18 @@
+{
+    "Export": {
+        "NetworkProtocolDirectory": {
+            "Value": "../NetworkProtocol",
+            "Comment": "ProtoBuf文件所在的文件夹位置"
+        },
+        "NetworkProtocolServerDirectory": {
+            "Value": "../../Server/Entity/Generate/NetworkProtocol",
+            "Comment": "ProtoBuf生成到服务端的文件夹位置"
+        },
+        "NetworkProtocolClientDirectory": {
+            "Value": "../../Client/GameTopRouge/Assets/AAAGame/ScriptsHotfix/GameNetwork/NetworkProtocol",
+            "Comment": "ProtoBuf生成到客户端的文件夹位置"
+        }
+        
+        
+    }
+}
