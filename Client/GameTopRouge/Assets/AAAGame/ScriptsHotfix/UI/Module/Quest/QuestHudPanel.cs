@@ -1,38 +1,66 @@
 using System.Linq;
-using AAAGame.ScriptsHotfix.GamePlay.Quest;
-using AAAGame.ScriptsHotfix.UI.Module.Dialogue;
+using AAAGame.ScriptsHotfix.Bridge;
 using Cysharp.Threading.Tasks;
 using cfg.Quest;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using QuestStatus = AAAGame.ScriptsHotfix.Bridge.UIToGamePlayerBridge.QuestStatus;
+using PlayerProgressSnapshot = AAAGame.ScriptsHotfix.Bridge.UIToGamePlayerBridge.PlayerProgressSnapshot;
+using QuestProgressEntry = AAAGame.ScriptsHotfix.Bridge.UIToGamePlayerBridge.QuestProgressEntry;
+using QuestDataSnapshot = AAAGame.ScriptsHotfix.Bridge.UIToGamePlayerBridge.QuestDataSnapshot;
 
 namespace AAAGame.ScriptsHotfix.UI.Module.Quest
 {
     /// <summary>地图中的当前追踪目标与任务记录快捷入口。</summary>
     public sealed class QuestHudPanel : UGF_Panel
     {
+        #region Auto Create
         /// <summary>当前任务标题和追踪目标文本控件。</summary>
-        private TMP_Text _text;
+        private TMP_Text m_Text;
+        /// <summary>打开任务日志的按钮。</summary>
+        private UGF_Button m_JournalButton;
+        /// <summary>打开任务日志按钮的本地化文本。</summary>
+        private TMP_Text m_JournalLabel;
+        #endregion
         /// <summary>当前 HUD 使用的任务数据表快照。</summary>
-        private QuestData _data;
-        /// <summary>标记动态控件是否已经创建。</summary>
+        private QuestDataSnapshot _data;
+        /// <summary>Prefab 控件是否已成功绑定。</summary>
         private bool _built;
 
-        /// <summary>首次打开表单时创建 HUD 并订阅账号进度变化。</summary>
-        /// <param name="userData">UI 框架传入的表单数据。</param>
-        protected override void OnInit(object userData)
+        /// <summary>为本次打开绑定交互。</summary>
+        protected override void RegisterEvent()
         {
-            base.OnInit(userData);
-            if (_built) return;
-            _built = true;
-            Build();
-            PlayerProgressService.SnapshotChanged += OnSnapshotChanged;
+            m_JournalButton.SetClickListener(OpenJournal);
+        }
+
+        /// <summary>从面板容器绑定显示和交互控件。</summary>
+        protected override void RegisterUI()
+        {
+            #region Auto Bind
+            m_Text = PanelUIContainer.Get<TMP_Text>("m_Text");
+            m_JournalButton = PanelUIContainer.Get<UGF_Button>("m_JournalButton");
+            m_JournalLabel = PanelUIContainer.Get<TMP_Text>("m_JournalLabel");
+                _built = true;
+            #endregion
+        }
+
+        /// <summary>每次打开 HUD 时注册快捷按钮并恢复进度更新订阅。</summary>
+        /// <param name="userData">UI 框架传入的表单数据。</param>
+        protected override void OnOpen(object userData)
+        {
+            base.OnOpen(userData);
+            m_JournalLabel.text = GF.Localization.GetText("Quest.UI.Title");
+            if (!_built) return;
+
+            UIToGamePlayerBridge.Instance.ProgressSnapshotChanged -= OnSnapshotChanged;
+            UIToGamePlayerBridge.Instance.ProgressSnapshotChanged += OnSnapshotChanged;
+            Refresh();
         }
 
         /// <summary>绑定地图流程已经加载的任务配置。</summary>
         /// <param name="data">任务 HUD 读取标题和目标时使用的数据表集合。</param>
-        internal void Bind(QuestData data)
+        internal void Bind(QuestDataSnapshot data)
         {
             _data = data;
         }
@@ -40,9 +68,9 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Quest
         /// <summary>根据当前追踪偏好和账号快照刷新 HUD 文本。</summary>
         internal void Refresh()
         {
-            if (_text == null || _data == null) return;
+            if (m_Text == null || _data == null) return;
             QuestModel.Instance.ReconcileTrack();
-            PlayerProgressSnapshot snapshot = PlayerProgressService.Snapshot;
+            PlayerProgressSnapshot snapshot = UIToGamePlayerBridge.Instance.CurrentProgress;
             cfg.Quest.QuestDefinition quest = _data.Quests.GetOrDefault(QuestModel.Instance.TrackedQuestId);
             if (quest == null || snapshot == null || snapshot.GetStatus(quest.Id) != QuestStatus.Active)
             {
@@ -54,7 +82,7 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Quest
             }
             if (quest == null)
             {
-                _text.text = string.Empty;
+                m_Text.text = string.Empty;
                 return;
             }
 
@@ -64,34 +92,15 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Quest
             QuestObjective objective = group == null ? null : _data.GetObjectives(group.Id)
                 .FirstOrDefault(value => snapshot.GetObjectiveCount(quest.Id, value.Id) < value.TargetCount);
             string objectiveText = objective == null
-                ? QuestConst.Text.NoObjectives
-                : QuestUiFactory.Localize(objective.DescriptionKey);
-            _text.text = QuestUiFactory.Localize(quest.TitleKey) + "\n" + objectiveText;
-        }
-
-        /// <summary>创建任务追踪卡片和任务日志快捷按钮。</summary>
-        private void Build()
-        {
-            RectTransform rect = GetComponent<RectTransform>();
-            rect.anchorMin = Vector2.zero;
-            rect.anchorMax = Vector2.one;
-            rect.offsetMin = rect.offsetMax = Vector2.zero;
-
-            Image panel = QuestUiFactory.Image("TrackedQuestCard", transform, new Vector2(570, 128),
-                new Vector2(0, 1), new Vector2(0, 1), new Vector2(36, -36), new Color32(20, 20, 18, 220));
-            QuestUiFactory.Image("TrackedQuestAccent", panel.transform, new Vector2(4, 128),
-                new Vector2(0, 0.5f), new Vector2(0, 0.5f), Vector2.zero, new Color32(154, 113, 57, 255));
-            _text = QuestUiFactory.Text("TrackedQuestText", panel.transform, string.Empty, 20,
-                new Color32(229, 218, 193, 255), new Vector2(500, 102),
-                new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(20, 0));
-            QuestUiFactory.Button("QuestJournalShortcut", panel.transform, QuestConst.Text.Title, 16,
-                new Vector2(210, 34), new Vector2(1, 0), new Vector2(1, 0), new Vector2(-12, 10), OpenJournal);
+                ? GF.Localization.GetText("Quest.UI.NoObjectives")
+                : GF.Localization.GetText(objective.DescriptionKey);
+            m_Text.text = GF.Localization.GetText(quest.TitleKey) + "\n" + objectiveText;
         }
 
         /// <summary>请求打开任务日志；对话期间忽略快捷键。</summary>
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.J) && !DialogueView.Instance.IsPlaying)
+            if (Input.GetKeyDown(KeyCode.J) && !UIToGamePlayerBridge.Instance.IsPlayerInputLocked)
                 QuestView.Instance.OpenJournalAsync().Forget(Debug.LogException);
         }
 
@@ -113,7 +122,7 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Quest
         /// <param name="userData">UI 框架传入的关闭数据。</param>
         protected override void OnClose(bool isShutdown, object userData)
         {
-            PlayerProgressService.SnapshotChanged -= OnSnapshotChanged;
+            UIToGamePlayerBridge.Instance.ProgressSnapshotChanged -= OnSnapshotChanged;
             QuestController.Instance.DetachHud(this);
             base.OnClose(isShutdown, userData);
         }

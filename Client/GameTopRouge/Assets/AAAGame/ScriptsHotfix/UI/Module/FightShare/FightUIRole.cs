@@ -1,27 +1,32 @@
-﻿using AAAGame.ScriptsHotfix.GamePlay.Logic.Role;
-using AAAGame.ScriptsHotfix.GamePlay.Logic.Unit.Role;
+﻿using AAAGame.ScriptsHotfix.Bridge;
 using GameFramework;
-using UnityEngine;
 
 namespace AAAGame.ScriptsHotfix.UI.Module.FightCommon
 {
-    public class FightUIRole:IReference
+    /// <summary>缓存显示角色 HUD 所需的数据和实例。</summary>
+    public sealed class FightUIRole : IReference
     {
-        public RoleUnit RoleUnit;
-        public int Id => RoleUnit.RoleId;
-        
+        /// <summary>Gameplay 经 Bridge 转换后的角色显示快照。</summary>
+        public GamePlayToUIBridge.RoleHudSnapshot Snapshot;
+        /// <summary>角色实例编号。</summary>
+        public int Id => Snapshot.RoleId;
+        /// <summary>当前角色对应的 HUD。</summary>
         public FightUIRoleHud Hud;
 
-        public static FightUIRole Create(RoleUnit roleUnit)
+        /// <summary>从角色快照创建 UI 资料。</summary>
+        /// <param name="snapshot">角色的 HUD 显示数据。</param>
+        public static FightUIRole Create(GamePlayToUIBridge.RoleHudSnapshot snapshot)
         {
             FightUIRole role = ReferencePool.Acquire<FightUIRole>();
-            role.RoleUnit = roleUnit;
+            role.Snapshot = snapshot;
             return role;
         }
-        
+
+        /// <summary>重置并清理对象池实例。</summary>
         public void Clear()
         {
-        
+            Snapshot = default;
+            Hud = null;
         }
     }
 }

@@ -3,6 +3,7 @@ using Fantasy;
 using Fantasy.Async;
 using Fantasy.Network;
 using Fantasy.Network.Interface;
+using Hotfix.Auth;
 using Hotfix.Gate.Component;
 using Hotfix.Progress;
 
@@ -18,6 +19,7 @@ public sealed class C2G_LoadPlayerProgressHandler : MessageRPC<C2G_LoadPlayerPro
     /// <param name="reply">由 Fantasy RPC 框架管理的响应回调。</param>
     protected override async FTask Run(Session session, C2G_LoadPlayerProgress request, G2C_LoadPlayerProgress response, Action reply)
     {
+        
         if (!AuthSceneHelper.TryGetPlayerId(session, out int playerId))
         {
             response.ErrorCode = ProgressError.NotAuthenticated;

@@ -1,5 +1,4 @@
-﻿using AAAGame.ScriptsHotfix.GamePlay.Logic.Role;
-using AAAGame.ScriptsHotfix.GamePlay.Logic.Unit.Role;
+﻿using AAAGame.ScriptsHotfix.Bridge;
 using GameFramework;
 using UnityEngine;
 using UnityGameFramework.Runtime;
@@ -39,7 +38,7 @@ namespace AAAGame.ScriptsHotfix.UI.Module.FightCommon
             
             _rectTransform = m_uiNode.GetComponent<RectTransform>();
             
-            m_Name.SetText(_fightUIRole.RoleUnit.Data.OperateId.ToString());
+            m_Name.SetText(_fightUIRole.Snapshot.OperateId.ToString());
         }
 
         public void UpdateHudPos(float x, float y)
@@ -49,9 +48,10 @@ namespace AAAGame.ScriptsHotfix.UI.Module.FightCommon
             _rectTransform.anchoredPosition =_tmpV2;
         }
         
-        public void UpdateHudHp(RoleUnit roleUnit)
+        public void UpdateHudHp(GamePlayToUIBridge.RoleHudSnapshot snapshot)
         {
-            m_HpBar.DoFillAmount(roleUnit.Data.Resource.hp/(float)roleUnit.Data.Prop.Hp,0.1f,(f =>
+            float hpRatio = snapshot.MaxHp > 0 ? snapshot.Hp / snapshot.MaxHp : 0;
+            m_HpBar.DoFillAmount(hpRatio,0.1f,(f =>
             {
                 
             } ));

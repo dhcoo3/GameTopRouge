@@ -15,7 +15,8 @@
         "Luban.Runtime",
         "DOTween.Extension",
         "Unity.Burst",
-        "Fantasy.Unity"
+        "Fantasy.Unity",
+        "LoopScrollRect.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

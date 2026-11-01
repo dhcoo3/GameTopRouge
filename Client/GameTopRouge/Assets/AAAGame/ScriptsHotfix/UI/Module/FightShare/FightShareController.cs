@@ -1,5 +1,5 @@
-﻿using AAAGame.ScriptsHotfix.GamePlay.Logic.Unit.Role;
 using AAAGame.ScriptsHotfix.UI.Core;
+using AAAGame.ScriptsHotfix.Bridge;
 using AAAGame.ScriptsHotfix.UI.Module.FightMainChapter;
 using AAAGame.ScriptsHotfix.UI.Module.Login;
 using cfg.Fight;
@@ -23,7 +23,7 @@ namespace AAAGame.ScriptsHotfix.UI.Module.FightShare
 
         private void ECreateRoleHandler(object sender, GameEvent e)
         {
-            RoleUnit roleData = e.GetParam1<RoleUnit>();
+            GamePlayToUIBridge.RoleHudSnapshot roleData = e.GetParam1<GamePlayToUIBridge.RoleHudSnapshot>();
             FightShareModel.Instance.AddNewRole(roleData);
         }
 

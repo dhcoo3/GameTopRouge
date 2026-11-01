@@ -43,13 +43,13 @@ namespace AAAGame.ScriptsHotfix.UI.Module.FightShare
         
         private void EPopUpNumberHandler(object sender, GameEvent e)
         {
-            fix3 pos = e.GetParam1<fix3>();
+            Vector3 pos = e.GetParam1<Vector3>();
             int damageVal = e.GetParam2<int>();
             bool isHeal = e.GetParam3<bool>();
             StartCoroutine(StartShow(pos,damageVal,isHeal));
         }
         
-        IEnumerator StartShow(fix3 pos,int damageVal,bool isHeal)
+        IEnumerator StartShow(Vector3 pos,int damageVal,bool isHeal)
         {
             // 调用异步实例化方法
             var instantiateOperation = UnityEngine.Object.InstantiateAsync(DamageTextUI,this.transform);
@@ -65,7 +65,7 @@ namespace AAAGame.ScriptsHotfix.UI.Module.FightShare
                 UIContainer uiContainer = instantiatedObj[0].GetComponent<UIContainer>();
                 uiContainer.Get<UGF_Text>("m_Damage").SetText(damageVal.ToString());
                 
-                Vector2 uiPos = Utils.WorldToUIPoint(new Vector3(pos.x,pos.y,pos.z));
+                Vector2 uiPos = Utils.WorldToUIPoint(pos);
                 uiPos.y += 120;
                 
                 // 对实例化对象进行操作，例如设置位置

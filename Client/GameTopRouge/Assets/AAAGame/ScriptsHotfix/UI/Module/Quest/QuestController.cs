@@ -1,14 +1,16 @@
 using System;
 using System.Linq;
 using System.Threading;
-using AAAGame.ScriptsHotfix.GamePlay.Logic.GameInput;
-using AAAGame.ScriptsHotfix.GamePlay.Logic.ProxyManager;
-using AAAGame.ScriptsHotfix.GamePlay.Quest;
+using AAAGame.ScriptsHotfix.Bridge;
 using AAAGame.ScriptsHotfix.UI.Core;
 using cfg.Quest;
 using Cysharp.Threading.Tasks;
 using cfg.UI;
 using UnityEngine;
+using QuestProgressSnapshot = AAAGame.ScriptsHotfix.Bridge.UIToGamePlayerBridge.PlayerProgressSnapshot;
+using QuestProgressEntry = AAAGame.ScriptsHotfix.Bridge.UIToGamePlayerBridge.QuestProgressEntry;
+using QuestStatus = AAAGame.ScriptsHotfix.Bridge.UIToGamePlayerBridge.QuestStatus;
+using QuestDataSnapshot = AAAGame.ScriptsHotfix.Bridge.UIToGamePlayerBridge.QuestDataSnapshot;
 
 namespace AAAGame.ScriptsHotfix.UI.Module.Quest
 {
@@ -35,8 +37,6 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Quest
         private int _mapEntryGeneration;
         /// <summary>简报会话代数，用于隔离迟到的确认响应。</summary>
         private int _briefingGeneration;
-        /// <summary>地图切换或任务简报尚未完成时，阻止地图交互。</summary>
-        internal bool IsBlockingMapInteraction => _mapEntryInProgress || _briefingBusy;
 
         /// <summary>任务进度协议通过共享进度服务发送，不需要模块独立注册协议回调。</summary>
         public override void RegisterProto() { }
@@ -53,15 +53,14 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Quest
             _mapToken = token;
             int generation = ++_mapEntryGeneration;
             _mapEntryInProgress = true;
-            var input = GameProxyManger.Instance.GetProxy<InputProxy>();
-            input?.SetDialogueInputBlocked(true);
+            using IDisposable inputLock = UIToGamePlayerBridge.Instance.AcquirePlayerInputLock();
             try
             {
-                PlayerProgressSnapshot snapshot = await PlayerProgressService.LoadForMapAsync(mapId, token);
+                QuestProgressSnapshot snapshot = await UIToGamePlayerBridge.Instance.LoadPlayerProgressAsync(mapId, token);
                 token.ThrowIfCancellationRequested();
-                QuestData data = await QuestData.LoadAsync().AttachExternalCancellation(token);
+                QuestDataSnapshot data = await UIToGamePlayerBridge.Instance.LoadQuestDataAsync(token);
                 QuestModel.Instance.ReconcileTrack();
-                await QuestView.Instance.EnsureHudAsync();
+                await QuestView.Instance.EnsureHudAsync(data);
                 foreach (QuestProgressEntry progress in snapshot.Quests.Values.OrderBy(value => value.QuestId))
                 {
                     cfg.Quest.QuestDefinition quest = data.Quests.GetOrDefault(progress.QuestId);
@@ -70,13 +69,17 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Quest
                 }
             }
             catch (OperationCanceledException) { }
+            catch (UIToGamePlayerBridge.ProgressOperationException exception) when
+                (exception.ErrorCode == (uint)UIToGamePlayerBridge.ProgressErrorCode.StorageUnavailable)
+            {
+                Debug.LogWarning("当前网络连接已中断，暂未加载任务进度。网络恢复后重新进入地图可重新加载进度。");
+            }
             catch (Exception exception) { Debug.LogException(exception); }
             finally
             {
                 if (generation == _mapEntryGeneration)
                 {
                     _mapEntryInProgress = false;
-                    input?.SetDialogueInputBlocked(false);
                 }
             }
         }
@@ -85,9 +88,9 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Quest
         /// <returns>面板打开并绑定任务数据后的异步任务。</returns>
         internal async UniTask OpenJournalAsync()
         {
-            if (_mapEntryInProgress || _briefingBusy) return;
+            if (_mapEntryInProgress || _briefingBusy || UIToGamePlayerBridge.Instance.IsPlayerInputLocked) return;
             if (_panel != null || _openingPanel) return;
-            if (!PlayerProgressService.IsLoaded)
+            if (!UIToGamePlayerBridge.Instance.IsProgressLoaded)
             {
                 Debug.LogWarning("Quest journal is not ready until account progress loads.");
                 return;
@@ -95,8 +98,9 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Quest
             _openingPanel = true;
             try
             {
+                using IDisposable inputLock = UIToGamePlayerBridge.Instance.AcquirePlayerInputLock();
                 _panel = (QuestPanel)await UIModuleManager.Instance.GoToModuleAsync(ModuleType.Quest, UIParams.Create(false));
-                _panel.Bind(this, QuestModel.Instance, await QuestData.LoadAsync());
+                _panel.Bind(this, QuestModel.Instance, await UIToGamePlayerBridge.Instance.LoadQuestDataAsync());
             }
             catch (Exception exception) { Debug.LogException(exception); }
             finally { _openingPanel = false; }
@@ -151,9 +155,9 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Quest
             panel.SetBusy(true);
             try
             {
-                await PlayerProgressService.SubmitEventAsync(new PlayerProgressEvent
+                await UIToGamePlayerBridge.Instance.SubmitProgressEventAsync(new UIToGamePlayerBridge.ProgressEvent
                 {
-                    Type = PlayerProgressEventType.AcknowledgeBriefing,
+                    Type = UIToGamePlayerBridge.ProgressEventType.AcknowledgeBriefing,
                     QuestId = quest.Id,
                     MapId = quest.StartMapId
                 }, _mapToken);
@@ -164,7 +168,7 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Quest
             catch (Exception exception)
             {
                 if (generation == _briefingGeneration && ReferenceEquals(_briefing, panel))
-                    panel.SetError(QuestConst.Text.OperationFailed);
+                    panel.SetError(GF.Localization.GetText("Quest.UI.Error"));
                 Debug.LogWarning($"Quest briefing confirmation failed: {exception.Message}");
             }
         }
@@ -196,7 +200,7 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Quest
         /// <summary>绑定地图 HUD，并使用最新账号进度更新显示。</summary>
         /// <param name="hud">已由 UI 模块系统打开的 HUD 面板。</param>
         /// <param name="data">已加载的任务配置快照。</param>
-        internal void AttachHud(QuestHudPanel hud, QuestData data)
+        internal void AttachHud(QuestHudPanel hud, QuestDataSnapshot data)
         {
             _hud = hud;
             _hud.Bind(data);

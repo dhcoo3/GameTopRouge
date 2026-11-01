@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using AAAGame.ScriptsHotfix.GamePlay.Quest;
+using AAAGame.ScriptsHotfix.Bridge;
 using AAAGame.ScriptsHotfix.UI.Core;
 using cfg.Dialogue;
 using Cysharp.Threading.Tasks;
@@ -41,6 +41,7 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Dialogue
         {
             var model = DialogueModel.Instance;
             if (model.IsPlaying) return new DialogueResult(DialogueStatus.Busy);
+            using IDisposable inputLock = UIToGamePlayerBridge.Instance.AcquirePlayerInputLock();
             model.Begin();
             _completion = new UniTaskCompletionSource<DialogueResult>();
             try
@@ -102,9 +103,9 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Dialogue
                             nodeId = DialogueModel.Instance.GetFlag(node.FlagKey) == node.FlagValue ? node.TrueNodeId : node.FalseNodeId;
                             continue;
                         case DialogueNodeType.SetFlag:
-                            await PlayerProgressService.SubmitEventAsync(new PlayerProgressEvent
+                            await UIToGamePlayerBridge.Instance.SubmitProgressEventAsync(new UIToGamePlayerBridge.ProgressEvent
                             {
-                                Type = PlayerProgressEventType.DialogueSetFlag,
+                                Type = UIToGamePlayerBridge.ProgressEventType.DialogueSetFlag,
                                 DialogueId = _dialogueId,
                                 DialogueNodeId = node.Id
                             }, _sessionToken);
@@ -136,7 +137,7 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Dialogue
             var option = _data.Options.GetOrDefault(optionId);
             if (_moving || option == null || option.NodeId != DialogueModel.Instance.Current?.Id) return;
             DialogueModel.Instance.Choices.Add(optionId);
-            DialogueModel.Instance.AddHistory("> " + _panel.Text(option.TextKey));
+            DialogueModel.Instance.AddHistory("> " + GF.Localization.GetText(option.TextKey));
             MoveToAsync(option.TargetNodeId).Forget(UnityEngine.Debug.LogException);
         }
         /// <summary>统一结束会话；重复调用不改变首次完成结果。</summary>

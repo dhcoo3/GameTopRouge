@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using AAAGame.ScriptsHotfix.GamePlay.Quest;
+using AAAGame.ScriptsHotfix.Bridge;
 using AAAGame.ScriptsHotfix.UI.Core;
 using cfg.Dialogue;
 
@@ -52,7 +52,7 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Dialogue
         /// <summary>读取标记，不存在时返回 false。</summary>
         /// <param name="key">稳定的标记名称。</param>
         /// <returns>标记当前值。</returns>
-        internal bool GetFlag(string key) => PlayerProgressService.GetStoryFlag(key);
+        internal bool GetFlag(string key) => UIToGamePlayerBridge.Instance.GetStoryFlag(key);
 
         /// <summary>追加有容量限制的历史条目。</summary>
         /// <param name="text">已显示的台词或选项。</param>

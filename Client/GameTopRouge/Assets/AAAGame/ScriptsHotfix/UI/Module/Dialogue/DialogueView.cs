@@ -24,7 +24,6 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Dialogue
         private async UniTask<DialoguePanel> OpenPanelAsync()
         {
             var panel = (DialoguePanel)await UIModuleManager.Instance.GoToModuleAsync(ModuleType.Dialogue, UIParams.Create(false));
-            panel.Localize = null;
             panel.CloseAction = () => panel.Close(false);
             return panel;
         }

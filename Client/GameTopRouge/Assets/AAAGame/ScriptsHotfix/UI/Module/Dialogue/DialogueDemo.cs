@@ -48,17 +48,16 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Dialogue
             _lifetime = new CancellationTokenSource();
             _localization = new TbLocalization();
             _localization._LoadData(new ByteBuf(LocalizationBytes.bytes));
-            StartButton.GetComponentInChildren<TMP_Text>().text = Text(DialogueConst.LocalizationKey.Start);
-            ResetButton.GetComponentInChildren<TMP_Text>().text = Text(DialogueConst.LocalizationKey.Reset);
-            Title.text = Text(DialogueConst.LocalizationKey.Title);
-            Hint.text = Text(DialogueConst.LocalizationKey.Hint);
+            var localization = GameFramework.GameFrameworkEntry.GetModule<GameFramework.Localization.ILocalizationManager>();
+            foreach (var entry in _localization.DataList)
+                if (!localization.HasRawString(entry.Id)) localization.AddRawString(entry.Id, entry.ChineseSimplified);
+            StartButton.GetComponentInChildren<TMP_Text>().text = GF.Localization.GetText(DialogueConst.LocalizationKey.Start);
+            ResetButton.GetComponentInChildren<TMP_Text>().text = GF.Localization.GetText(DialogueConst.LocalizationKey.Reset);
+            Title.text = GF.Localization.GetText(DialogueConst.LocalizationKey.Title);
+            Hint.text = GF.Localization.GetText(DialogueConst.LocalizationKey.Hint);
             StartButton.onClick.AddListener(StartConversation);
             ResetButton.onClick.AddListener(ShowResetUnavailableMessage);
         }
-        /// <summary>读取生成的简体中文文案，缺失时显示稳定键便于定位。</summary>
-        /// <param name="key">本地化键。</param>
-        /// <returns>玩家文案。</returns>
-        private string Text(string key) => _localization.GetOrDefault(key)?.ChineseSimplified ?? key;
         /// <summary>按钮入口负责观察异步任务。</summary>
         private void StartConversation() => RunAsync().Forget(Debug.LogException);
         /// <summary>等待会话完成后恢复演示按钮。</summary>
@@ -68,7 +67,7 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Dialogue
             StartButton.interactable = ResetButton.interactable = false;
             var result = await DialogueController.Instance.PlayAsync(1, OpenPanelAsync, LoadDataAsync, _lifetime.Token);
             if (this == null || _lifetime == null) return;
-            Status.text = Text(DialogueConst.Text.GetStatusKey(result.Status));
+            Status.text = GF.Localization.GetText(DialogueConst.Text.GetStatusKey(result.Status));
             StartButton.interactable = ResetButton.interactable = true;
         }
         /// <summary>实例化正式对话 Prefab，注入演示本地化读取器。</summary>
@@ -76,7 +75,6 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Dialogue
         private UniTask<DialoguePanel> OpenPanelAsync()
         {
             var panel = Instantiate(PanelPrefab, CanvasRoot);
-            panel.Localize = Text;
             panel.CloseAction = () => { if (panel != null) Destroy(panel.gameObject); };
             return UniTask.FromResult(panel);
         }
@@ -95,7 +93,7 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Dialogue
         /// <summary>说明剧情标记由账号进度管理，演示入口不修改存档。</summary>
         private void ShowResetUnavailableMessage()
         {
-            Status.text = Text(DialogueConst.LocalizationKey.ResetAccountOwned);
+            Status.text = GF.Localization.GetText(DialogueConst.LocalizationKey.ResetAccountOwned);
         }
         /// <summary>离开演示场景时取消会话，解除按钮监听。</summary>
         private void OnDestroy()

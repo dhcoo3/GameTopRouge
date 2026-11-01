@@ -36,7 +36,7 @@ public static class DialogueDemoBuilder
         Directory.CreateDirectory(ArtRoot);
         Directory.CreateDirectory(Path.GetDirectoryName(PrefabPath));
         Directory.CreateDirectory(Path.GetDirectoryName(ScenePath));
-        _font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/AAAGame/Font/Common/阿里巴巴普惠体 SDF.asset");
+        _font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/AAAGame/Font/Common/思源黑体 SDF.asset");
         _panelSprite = MakeSprite("Panel", false, false);
         _buttonSprite = MakeSprite("Option", true, false);
         var portrait = MakeSprite("PortraitPlaceholder", false, true);
@@ -53,42 +53,42 @@ public static class DialogueDemoBuilder
             var panel = root.gameObject.AddComponent<DialoguePanel>();
             panel.OpenFade = false;
             panel.Placeholder = portrait;
-            var block = root.gameObject.AddComponent<Image>();
+            var block = root.gameObject.AddComponent<UGF_Image>();
             block.color = new Color(0, 0, 0, .12f);
             var safe = Rect("SafeArea", root);
             Stretch(safe);
-            panel.SafeArea = safe;
+            panel.PanelUIContainer.AddNode("m_SafeArea", (safe).gameObject, "RectTransform", "private");
             var frame = Rect("DialogueFrame", safe);
             frame.anchorMin = new Vector2(.0625f, 0);
             frame.anchorMax = new Vector2(.9375f, 0);
             frame.pivot = new Vector2(.5f, 0);
             frame.anchoredPosition = new Vector2(0, 48);
             frame.sizeDelta = new Vector2(0, 280);
-            var background = frame.gameObject.AddComponent<Image>();
+            var background = frame.gameObject.AddComponent<UGF_Image>();
             background.sprite = _panelSprite;
             background.type = Image.Type.Sliced;
-            panel.ContinueButton = frame.gameObject.AddComponent<Button>();
-            panel.ContinueButton.transition = Selectable.Transition.None;
-            panel.ContinueButton.navigation = new Navigation { mode = Navigation.Mode.None };
+            panel.PanelUIContainer.AddNode("m_ContinueButton", (frame.gameObject.AddComponent<UGF_Button>()).gameObject, "UGF_Button", "private");
+            panel.PanelUIContainer.Get<UGF_Button>("m_ContinueButton").transition = Selectable.Transition.None;
+            panel.PanelUIContainer.Get<UGF_Button>("m_ContinueButton").navigation = new Navigation { mode = Navigation.Mode.None };
             var portraitRect = Rect("Portrait", frame);
             Fixed(portraitRect, new Vector2(40, -52), new Vector2(176, 176), new Vector2(0, 1));
-            panel.Portrait = portraitRect.gameObject.AddComponent<Image>();
-            panel.Portrait.sprite = portrait;
-            panel.Portrait.preserveAspect = true;
-            panel.Portrait.raycastTarget = false;
-            panel.Speaker = Label("Speaker", frame, 30);
-            Fixed(panel.Speaker.rectTransform, new Vector2(248, -30), new Vector2(1000, 42), new Vector2(0, 1));
-            panel.Speaker.color = new Color32(201, 149, 76, 255);
-            panel.Body = Label("Body", frame, 28);
-            Stretch(panel.Body.rectTransform);
-            panel.Body.rectTransform.offsetMin = new Vector2(248, 52);
-            panel.Body.rectTransform.offsetMax = new Vector2(-40, -82);
-            panel.Body.overflowMode = TextOverflowModes.Page;
-            panel.Body.lineSpacing = 3;
-            panel.Prompt = Label("Prompt", frame, 20);
-            Fixed(panel.Prompt.rectTransform, new Vector2(-40, 18), new Vector2(220, 30), new Vector2(1, 0));
-            panel.Prompt.alignment = TextAlignmentOptions.Right;
-            panel.OptionButtons = new Button[4];
+            panel.PanelUIContainer.AddNode("m_Portrait", (portraitRect.gameObject.AddComponent<UGF_Image>()).gameObject, "UGF_Image", "private");
+            panel.PanelUIContainer.Get<UGF_Image>("m_Portrait").sprite = portrait;
+            panel.PanelUIContainer.Get<UGF_Image>("m_Portrait").preserveAspect = true;
+            panel.PanelUIContainer.Get<UGF_Image>("m_Portrait").raycastTarget = false;
+            panel.PanelUIContainer.AddNode("m_Speaker", (Label("Speaker", frame, 30)).gameObject, "TMP_Text", "private");
+            Fixed(panel.PanelUIContainer.Get<TMP_Text>("m_Speaker").rectTransform, new Vector2(248, -30), new Vector2(1000, 42), new Vector2(0, 1));
+            panel.PanelUIContainer.Get<TMP_Text>("m_Speaker").color = new Color32(201, 149, 76, 255);
+            panel.PanelUIContainer.AddNode("m_Body", (Label("Body", frame, 28)).gameObject, "TMP_Text", "private");
+            Stretch(panel.PanelUIContainer.Get<TMP_Text>("m_Body").rectTransform);
+            panel.PanelUIContainer.Get<TMP_Text>("m_Body").rectTransform.offsetMin = new Vector2(248, 52);
+            panel.PanelUIContainer.Get<TMP_Text>("m_Body").rectTransform.offsetMax = new Vector2(-40, -82);
+            panel.PanelUIContainer.Get<TMP_Text>("m_Body").overflowMode = TextOverflowModes.Page;
+            panel.PanelUIContainer.Get<TMP_Text>("m_Body").lineSpacing = 3;
+            panel.PanelUIContainer.AddNode("m_Prompt", (Label("Prompt", frame, 20)).gameObject, "TMP_Text", "private");
+            Fixed(panel.PanelUIContainer.Get<TMP_Text>("m_Prompt").rectTransform, new Vector2(-40, 18), new Vector2(220, 30), new Vector2(1, 0));
+            panel.PanelUIContainer.Get<TMP_Text>("m_Prompt").alignment = TextAlignmentOptions.Right;
+            var optionButtons = new UGF_Button[4];
             for (int i = 0; i < 4; i++)
             {
                 var option = Button("Option" + (i + 1), safe, 26);
@@ -97,16 +97,32 @@ public static class DialogueDemoBuilder
                 rect.pivot = new Vector2(.5f, 0);
                 rect.sizeDelta = new Vector2(840, 64);
                 rect.anchoredPosition = new Vector2(0, 348 + (3 - i) * 76);
-                panel.OptionButtons[i] = option;
+                optionButtons[i] = option;
                 var outline = option.gameObject.AddComponent<Outline>();
                 outline.effectColor = new Color32(201, 149, 76, 255);
                 outline.effectDistance = new Vector2(2, -2);
                 outline.enabled = false;
                 option.gameObject.SetActive(false);
             }
-            panel.HistoryButton = Button("History", safe, 24);
-            Fixed((RectTransform)panel.HistoryButton.transform, new Vector2(-48, -40), new Vector2(144, 56), new Vector2(1, 1));
+            panel.PanelUIContainer.AddNode("m_HistoryButton", (Button("History", safe, 24)).gameObject, "UGF_Button", "private");
+            Fixed((RectTransform)panel.PanelUIContainer.Get<UGF_Button>("m_HistoryButton").transform, new Vector2(-48, -40), new Vector2(144, 56), new Vector2(1, 1));
             BuildHistory(panel, safe);
+            var container = panel.PanelUIContainer;
+            container.AddNode("m_BodyRect", container.Get<TMP_Text>("m_Body").gameObject, "RectTransform", "private");
+            foreach (var key in new[] { "HistoryButton", "HistoryBackButton" })
+                container.AddNode("m_" + key + "Text", container.Get<UGF_Button>("m_" + key).GetComponentInChildren<TMP_Text>(true).gameObject, "TMP_Text", "private");
+            for (int i = 0; i < 4; i++)
+            {
+                var option = optionButtons[i];
+                container.AddNode("m_OptionButtons" + i, option.gameObject, "UGF_Button", "private");
+                container.AddNode("m_OptionText" + i, option.GetComponentInChildren<TMP_Text>(true).gameObject, "TMP_Text", "private");
+                container.AddNode("m_OptionImage" + i, option.gameObject, "UGF_Image", "private");
+                container.AddNode("m_OptionOutline" + i, option.gameObject, "Outline", "private");
+            }
+            // 容器引用的实际节点也必须使用 m_ 前缀。
+            foreach (var entry in container.UIContainerDict)
+                if (entry.Value.NodeObj != null && !entry.Value.NodeObj.name.StartsWith("m_"))
+                    entry.Value.NodeObj.name = "m_" + entry.Value.NodeObj.name;
             var prefab = PrefabUtility.SaveAsPrefabAsset(root.gameObject, PrefabPath).GetComponent<DialoguePanel>();
             Object.DestroyImmediate(root.gameObject);
             BuildDemo(canvas, prefab);
@@ -224,13 +240,13 @@ public static class DialogueDemoBuilder
     /// <param name="parent">父节点。</param>
     /// <param name="fontSize">文字字号。</param>
     /// <returns>按钮。</returns>
-    private static Button Button(string name, Transform parent, int fontSize)
+    private static UGF_Button Button(string name, Transform parent, int fontSize)
     {
         var rect = Rect(name, parent);
-        var image = rect.gameObject.AddComponent<Image>();
+        var image = rect.gameObject.AddComponent<UGF_Image>();
         image.sprite = _buttonSprite;
         image.type = Image.Type.Sliced;
-        var button = rect.gameObject.AddComponent<Button>();
+        var button = rect.gameObject.AddComponent<UGF_Button>();
         button.navigation = new Navigation { mode = Navigation.Mode.None };
         var text = Label("Label", rect, fontSize);
         Stretch(text.rectTransform);
@@ -246,17 +262,17 @@ public static class DialogueDemoBuilder
     {
         var overlay = Rect("HistoryOverlay", parent);
         Stretch(overlay);
-        overlay.gameObject.AddComponent<Image>().color = new Color(0, 0, 0, .88f);
-        panel.HistoryRoot = overlay.gameObject;
+        overlay.gameObject.AddComponent<UGF_Image>().color = new Color(0, 0, 0, .88f);
+        panel.PanelUIContainer.AddNode("m_HistoryRoot", overlay.gameObject, "Transform", "private");
         var viewport = Rect("Viewport", overlay);
         Stretch(viewport);
         viewport.offsetMin = new Vector2(180, 150);
         viewport.offsetMax = new Vector2(-180, -100);
         viewport.gameObject.AddComponent<RectMask2D>();
         var scroll = viewport.gameObject.AddComponent<ScrollRect>();
-        viewport.gameObject.AddComponent<Image>().color = new Color(0, 0, 0, .01f);
-        panel.HistoryText = Label("HistoryText", viewport, 28);
-        var content = panel.HistoryText.rectTransform;
+        viewport.gameObject.AddComponent<UGF_Image>().color = new Color(0, 0, 0, .01f);
+        panel.PanelUIContainer.AddNode("m_HistoryText", (Label("HistoryText", viewport, 28)).gameObject, "TMP_Text", "private");
+        var content = panel.PanelUIContainer.Get<TMP_Text>("m_HistoryText").rectTransform;
         content.anchorMin = new Vector2(0, 1);
         content.anchorMax = Vector2.one;
         content.pivot = new Vector2(.5f, 1);
@@ -265,8 +281,8 @@ public static class DialogueDemoBuilder
         scroll.content = content;
         scroll.viewport = viewport;
         scroll.horizontal = false;
-        panel.HistoryBackButton = Button("Back", overlay, 24);
-        Fixed((RectTransform)panel.HistoryBackButton.transform, new Vector2(0, 48), new Vector2(240, 64), new Vector2(.5f, 0));
+        panel.PanelUIContainer.AddNode("m_HistoryBackButton", (Button("Back", overlay, 24)).gameObject, "UGF_Button", "private");
+        Fixed((RectTransform)panel.PanelUIContainer.Get<UGF_Button>("m_HistoryBackButton").transform, new Vector2(0, 48), new Vector2(240, 64), new Vector2(.5f, 0));
         overlay.gameObject.SetActive(false);
     }
     /// <summary>构建没有登录或网络依赖的独立演示入口。</summary>
@@ -276,7 +292,7 @@ public static class DialogueDemoBuilder
     {
         var backdrop = Rect("Backdrop", canvas.transform);
         Stretch(backdrop);
-        backdrop.gameObject.AddComponent<Image>().color = new Color32(22, 23, 21, 255);
+        backdrop.gameObject.AddComponent<UGF_Image>().color = new Color32(22, 23, 21, 255);
         var demo = new GameObject("DialogueDemo").AddComponent<DialogueDemo>();
         demo.PanelPrefab = prefab;
         demo.CanvasRoot = canvas.transform;

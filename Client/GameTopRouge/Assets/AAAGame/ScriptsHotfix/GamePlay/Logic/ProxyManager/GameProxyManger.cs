@@ -64,17 +64,33 @@ namespace AAAGame.ScriptsHotfix.GamePlay.Logic.ProxyManager
             return null;
         }
 
+        /// <summary>初始化当前已注册的玩法代理。</summary>
         public void Initialize()
         {
-            for(int i = 0;i< _proxyList.Length;i++)
+            GameProxy[] proxies = _proxyList;
+            if (proxies == null)
             {
-                _proxyList[i].Initialize();
+                return;
+            }
+
+            for (int i = 0; i < proxies.Length; i++)
+            {
+                proxies[i]?.Initialize();
             }
         }
 
+        /// <summary>查找当前已注册的玩法代理；系统结束或代理不存在时返回 null。</summary>
+        /// <typeparam name="T">需要查找的代理类型。</typeparam>
+        /// <returns>匹配的代理；当前未注册时返回 null。</returns>
         public T GetProxy<T>() where T : GameProxy
         {
-            foreach (var data in _proxyList)
+            GameProxy[] proxies = _proxyList;
+            if (proxies == null)
+            {
+                return null;
+            }
+
+            foreach (var data in proxies)
             {
                 if (data is T)
                 {
@@ -84,23 +100,40 @@ namespace AAAGame.ScriptsHotfix.GamePlay.Logic.ProxyManager
 
             return null;
         }
-     
+
+        /// <summary>推进所有当前注册且有效的玩法代理。</summary>
+        /// <param name="deltaTime">本次确定性逻辑更新的固定时间步长。</param>
         public void LogicUpdate(fix deltaTime)
         {
-            for(int i = 0;i< _proxyList.Length;i++)
+            GameProxy[] proxies = _proxyList;
+            if (proxies == null)
             {
-                _proxyList[i].LogicUpdate(deltaTime);
+                return;
+            }
+
+            for (int i = 0; i < proxies.Length; i++)
+            {
+                proxies[i]?.LogicUpdate(deltaTime);
             }
         }
 
+        /// <summary>释放全部玩法代理；重复调用不会访问已清理列表。</summary>
         public void Clear()
         {
-            for(int i = 0;i< _proxyList.Length;i++)
+            GameProxy[] proxies = _proxyList;
+            if (proxies == null)
             {
-                ReferencePool.Release(_proxyList[i]);
+                return;
             }
-            
+
             _proxyList = null;
+            for (int i = 0; i < proxies.Length; i++)
+            {
+                if (proxies[i] != null)
+                {
+                    ReferencePool.Release(proxies[i]);
+                }
+            }
         }
     }
 }

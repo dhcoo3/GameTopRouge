@@ -3,10 +3,8 @@ using System.Threading;
 using AAAGame.ScriptsHotfix.GamePlay.Logic.GameInput;
 using AAAGame.ScriptsHotfix.GamePlay.Logic.ProxyManager;
 using AAAGame.ScriptsHotfix.GamePlay.Logic.Unit;
-using AAAGame.ScriptsHotfix.GamePlay.Quest;
-using AAAGame.ScriptsHotfix.UI.Module.Dialogue;
-using AAAGame.ScriptsHotfix.UI.Module.Login;
-using AAAGame.ScriptsHotfix.UI.Module.Quest;
+using AAAGame.ScriptsHotfix.GamePlay.Logic.Quest;
+using AAAGame.ScriptsHotfix.Bridge;
 using cfg.Map;
 using Cysharp.Threading.Tasks;
 using TMPro;
@@ -59,19 +57,27 @@ namespace AAAGame.ScriptsHotfix.GamePlay.Render.Map
                 _prompt.rectTransform.sizeDelta = new Vector2(7, 1);
                 _prompt.GetComponent<MeshRenderer>().sortingOrder = 1000;
             }
-            _prompt.text = QuestConst.Text.Interact;
+            _prompt.text = GamePlayToUIBridge.Instance.TaskInteractionPrompt;
             _prompt.gameObject.SetActive(false);
         }
 
         /// <summary>按账号任务进度和玩家距离显示提示并响应调查键。</summary>
         private void Update()
         {
-            if (_marker == null || _prompt == null || !LoginModel.Instance.IsAuthenticated) return;
-            if (QuestView.Instance.IsBlockingMapInteraction || DialogueView.Instance.IsPlaying)
-            { _prompt.gameObject.SetActive(false); return; }
+            if (_marker == null || _prompt == null) return;
+            bool authenticated = GamePlayToUIBridge.Instance.IsPlayerAuthenticated;
+            if (!authenticated)
+            {
+                _prompt.gameObject.SetActive(false);
+                if (_pending) _lifetime?.Cancel();
+                return;
+            }
+            InputProxy input = GameProxyManger.Instance.GetProxy<InputProxy>();
             var role = GameProxyManger.Instance.GetProxy<UnitProxy>()?.MainRole;
             bool alive = role?.Data?.Resource != null && role.Data.Resource.hp > 0;
             if (_pending && !alive) _lifetime?.Cancel();
+            if (input?.IsMapInteractionBlocked == true)
+            { _prompt.gameObject.SetActive(false); return; }
             bool active = PlayerProgressService.IsObjectiveActive(_marker.objectiveId, out _);
             bool near = false;
             if (alive && role.RoleBehaviour != null)
@@ -79,7 +85,7 @@ namespace AAAGame.ScriptsHotfix.GamePlay.Render.Map
                 var position = role.RoleBehaviour.Position;
                 near = Vector2.Distance(new Vector2((float)position.x, (float)position.y), transform.position) <= _marker.radius;
             }
-            bool available = active && near && !_pending && !DialogueView.Instance.IsPlaying;
+            bool available = active && near && !_pending;
             _prompt.gameObject.SetActive(available);
             if (available && Input.GetKeyDown(KeyCode.E)) InspectAsync(_lifetime.Token).Forget(Debug.LogException);
         }
@@ -90,18 +96,18 @@ namespace AAAGame.ScriptsHotfix.GamePlay.Render.Map
         private async UniTask InspectAsync(CancellationToken token)
         {
             if (_pending || !PlayerProgressService.IsObjectiveActive(_marker.objectiveId, out int questId)) return;
-            QuestData data = await QuestData.LoadAsync();
-            QuestObjective objective = data.Objectives.GetOrDefault(_marker.objectiveId);
-            if (objective == null || objective.Type != ObjectiveType.InspectObject) return;
             _pending = true;
             InputProxy input = GameProxyManger.Instance.GetProxy<InputProxy>();
-            input?.SetDialogueInputBlocked(true);
+            using IDisposable inputLock = input?.AcquirePlayerInputLock();
             try
             {
+                QuestData data = await QuestData.LoadAsync();
+                QuestObjective objective = data.Objectives.GetOrDefault(_marker.objectiveId);
+                if (objective == null || objective.Type != ObjectiveType.InspectObject) return;
                 if (objective.DialogueId > 0)
                 {
-                    DialogueResult dialogue = await DialogueView.Instance.PlayAsync(objective.DialogueId, token);
-                    if (dialogue.Status != DialogueStatus.Completed) return;
+                    GamePlayToUIBridge.DialoguePlaybackResult dialogue = await GamePlayToUIBridge.Instance.PlayDialogueAsync(objective.DialogueId, token);
+                    if (dialogue.Status != GamePlayToUIBridge.DialoguePlaybackStatus.Completed) return;
                 }
                 await PlayerProgressService.SubmitEventAsync(new PlayerProgressEvent
                 {
@@ -119,7 +125,6 @@ namespace AAAGame.ScriptsHotfix.GamePlay.Render.Map
             catch (Exception exception) { Debug.LogWarning($"Task marker interaction failed: {exception.Message}"); }
             finally
             {
-                input?.SetDialogueInputBlocked(false);
                 _pending = false;
             }
         }

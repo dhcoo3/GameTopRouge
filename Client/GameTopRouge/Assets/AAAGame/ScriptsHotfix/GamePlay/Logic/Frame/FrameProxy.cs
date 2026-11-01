@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
+using AAAGame.ScriptsHotfix.Bridge;
 using AAAGame.ScriptsHotfix.GamePlay.Logic.Common;
 using AAAGame.ScriptsHotfix.GamePlay.Logic.GameInput;
 using AAAGame.ScriptsHotfix.GamePlay.Logic.ProxyManager;
-using AAAGame.ScriptsHotfix.UI.Module.Login;
 using Fantasy;
 using Fantasy.Network;
 using GameFramework;
@@ -485,7 +485,7 @@ namespace AAAGame.ScriptsHotfix.GamePlay.Logic.Frame
 
             _state = FramePlaybackState.Reconnecting;
             _inputProxy?.SetRoomInputBlocked(true);
-            LoginController.Instance.BeginReconnect();
+            GamePlayToUIBridge.Instance.BeginReconnect();
         }
 
         /// <summary>

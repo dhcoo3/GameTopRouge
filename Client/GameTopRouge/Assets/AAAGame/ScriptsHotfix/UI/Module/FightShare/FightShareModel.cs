@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using AAAGame.ScriptsHotfix.GamePlay.Logic.Unit.Role;
+using AAAGame.ScriptsHotfix.Bridge;
 using AAAGame.ScriptsHotfix.UI.Core;
 using AAAGame.ScriptsHotfix.UI.Module.FightCommon;
 using cfg.Fight;
@@ -32,7 +32,7 @@ namespace AAAGame.ScriptsHotfix.UI.Module.FightShare
             EntryVersion++;
             foreach (var role in _fightUiRoles.Values)
             {
-                role.RoleUnit = null;
+                role.Snapshot = default;
                 role.Hud = null;
                 GameFramework.ReferencePool.Release(role);
             }
@@ -41,10 +41,11 @@ namespace AAAGame.ScriptsHotfix.UI.Module.FightShare
         
         /// <summary>为本局角色建立 UI 资料。</summary>
         /// <param name="roleData">玩法层已经创建的角色。</param>
-        public void AddNewRole(RoleUnit roleData)
+        public void AddNewRole(GamePlayToUIBridge.RoleHudSnapshot roleData)
         {
             FightUIRole uiRole = FightUIRole.Create(roleData);
-            _fightUiRoles.TryAdd(uiRole.Id,uiRole);
+            if (!_fightUiRoles.TryAdd(uiRole.Id, uiRole))
+                GameFramework.ReferencePool.Release(uiRole);
         }
     }
 }

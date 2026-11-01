@@ -339,6 +339,15 @@
       "dependencies": {},
       "hash": "700a9609a06a925040ad8e3f17b64dfa9a2dec54"
     },
+    "me.qiankanglai.loopscrollrect": {
+      "version": "https://github.com/qiankanglai/LoopScrollRect.git#a7a32fbe81587690511871d9c51fff6d506937d2",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.ugui": "1.0.0"
+      },
+      "hash": "a7a32fbe81587690511871d9c51fff6d506937d2"
+    },
     "com.unity.modules.ai": {
       "version": "1.0.0",
       "depth": 0,

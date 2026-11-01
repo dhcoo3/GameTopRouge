@@ -3,8 +3,9 @@ using AAAGame.ScriptsHotfix.GamePlay.Logic.Fight;
 using AAAGame.ScriptsHotfix.GamePlay.Logic.GameInput;
 using AAAGame.ScriptsHotfix.GamePlay.Logic.Map;
 using AAAGame.ScriptsHotfix.GamePlay.Logic.ProxyManager;
+using AAAGame.ScriptsHotfix.Bridge;
 using AAAGame.ScriptsHotfix.GamePlay.Render.RenderManager;
-using AAAGame.ScriptsHotfix.UI.Module.Quest;
+using System;
 using System.Threading;
 using cfg.Map;
 using Cysharp.Threading.Tasks;
@@ -25,6 +26,10 @@ namespace AAAGame.ScriptsHotfix.GamePlay.Render.Map
         private MapData _placementMap;
         /// <summary>当前地图任务 UI 和进度请求的生命周期。</summary>
         private CancellationTokenSource _questLifetime;
+        /// <summary>使地图切换前异步会话的迟到回调失效。</summary>
+        private int _mapSessionGeneration;
+        /// <summary>地图切换期间持有的玩家输入锁。</summary>
+        private IDisposable _mapTransitionInputLock;
         /// <summary>负责更新地图加载界面进度的渲染代理。</summary>
         private FightLoadingProxy _fightLoadingProxy;
         /// <summary>异步加载中的地图场景操作。</summary>
@@ -84,7 +89,6 @@ namespace AAAGame.ScriptsHotfix.GamePlay.Render.Map
             _grid = null;
             _mapProxy = null;
             _fightLoadingProxy = null;
-            GameProxyManger.Instance.GetProxy<InputProxy>()?.SetDialogueInputBlocked(false);
             base.Clear();
         }
 
@@ -95,7 +99,7 @@ namespace AAAGame.ScriptsHotfix.GamePlay.Render.Map
         {
             MapData mapData = e.GetParam1<MapData>();
             StopQuestSession();
-            GameProxyManger.Instance.GetProxy<InputProxy>()?.SetDialogueInputBlocked(true);
+            _mapTransitionInputLock = GameProxyManger.Instance.GetProxy<InputProxy>()?.AcquirePlayerInputLock();
             _placements.Clear();
             _loadMapTimer?.Dispose();
             _loadMapTimer = null;
@@ -162,11 +166,11 @@ namespace AAAGame.ScriptsHotfix.GamePlay.Render.Map
 
             if (Application.isPlaying)
             {
-                Object.Destroy(gizmoObject);
+                UnityEngine.Object.Destroy(gizmoObject);
             }
             else
             {
-                Object.DestroyImmediate(gizmoObject);
+                UnityEngine.Object.DestroyImmediate(gizmoObject);
             }
         }
 #endif
@@ -184,7 +188,7 @@ namespace AAAGame.ScriptsHotfix.GamePlay.Render.Map
             {
                 _loadMapTimer.Dispose();
                 _placements.LoadAsync(_placementMap).Forget(Debug.LogException);
-                StartQuestSession();
+                StartQuestSession().Forget(Debug.LogException);
                 _fightLoadingProxy.SetSceneProgress(1);
             }
             else
@@ -199,23 +203,51 @@ namespace AAAGame.ScriptsHotfix.GamePlay.Render.Map
         }
         
         /// <summary>按当前地图启动任务状态加载和任务界面生命周期。</summary>
-        private void StartQuestSession()
+        private async UniTask StartQuestSession()
         {
-            if (_placementMap == null) return;
-            _questLifetime = new CancellationTokenSource();
-            QuestView.Instance.OnMapEnteredAsync(_placementMap.Id, _questLifetime.Token).Forget(Debug.LogException);
+            if (_placementMap == null)
+            {
+                ReleaseMapTransitionInputLock();
+                return;
+            }
+            int generation = _mapSessionGeneration;
+            CancellationTokenSource lifetime = new CancellationTokenSource();
+            _questLifetime = lifetime;
+            try
+            {
+                await GamePlayToUIBridge.Instance.OnMapEnteredAsync(_placementMap.Id, lifetime.Token);
+            }
+            catch (OperationCanceledException) { }
+            finally
+            {
+                lifetime.Dispose();
+                if (generation == _mapSessionGeneration)
+                {
+                    if (ReferenceEquals(_questLifetime, lifetime)) _questLifetime = null;
+                    ReleaseMapTransitionInputLock();
+                }
+            }
         }
 
         /// <summary>结束当前地图的任务生命周期并关闭任务界面。</summary>
         private void StopQuestSession()
         {
+            _mapSessionGeneration++;
             if (_questLifetime != null)
             {
                 _questLifetime.Cancel();
                 _questLifetime.Dispose();
                 _questLifetime = null;
             }
-            QuestView.Instance.CloseMapUI();
+            GamePlayToUIBridge.Instance.CloseMapUI();
+            ReleaseMapTransitionInputLock();
+        }
+
+        /// <summary>释放地图切换期间占用的输入锁。</summary>
+        private void ReleaseMapTransitionInputLock()
+        {
+            _mapTransitionInputLock?.Dispose();
+            _mapTransitionInputLock = null;
         }
 
         /// <summary>根据当前地图尺寸创建固定物件，并按配置创建全部网格。</summary>
@@ -271,7 +303,7 @@ namespace AAAGame.ScriptsHotfix.GamePlay.Render.Map
             if (_gridCreateCount == _gridMaxCount)
             {
                 _placements.LoadAsync(_placementMap).Forget(Debug.LogException);
-                StartQuestSession();
+                StartQuestSession().Forget(Debug.LogException);
             }
             _fightLoadingProxy.SetSceneProgress(_gridCreateCount/_gridMaxCount);
         }

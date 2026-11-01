@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
-using AAAGame.ScriptsHotfix.GamePlay.Quest;
+using AAAGame.ScriptsHotfix.Bridge;
 using AAAGame.ScriptsHotfix.UI.Core;
+using QuestStatus = AAAGame.ScriptsHotfix.Bridge.UIToGamePlayerBridge.QuestStatus;
+using PlayerProgressSnapshot = AAAGame.ScriptsHotfix.Bridge.UIToGamePlayerBridge.PlayerProgressSnapshot;
 
 namespace AAAGame.ScriptsHotfix.UI.Module.Quest
 {
@@ -31,7 +33,7 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Quest
         /// <summary>校验当前追踪任务并在账号状态变化后恢复默认追踪项。</summary>
         public void ReconcileTrack()
         {
-            PlayerProgressSnapshot snapshot = PlayerProgressService.Snapshot;
+            PlayerProgressSnapshot snapshot = UIToGamePlayerBridge.Instance.CurrentProgress;
             if (snapshot == null) { TrackedQuestId = 0; return; }
             string key = TrackKeyPrefix + GF.UserId;
             int saved = int.TryParse(GF.Setting.GetString(key, "0"), out int value) ? value : 0;
@@ -50,7 +52,7 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Quest
         /// <param name="questId">玩家选择追踪的任务编号。</param>
         public void Track(int questId)
         {
-            PlayerProgressSnapshot snapshot = PlayerProgressService.Snapshot;
+            PlayerProgressSnapshot snapshot = UIToGamePlayerBridge.Instance.CurrentProgress;
             if (snapshot == null || snapshot.GetStatus(questId) != QuestStatus.Active) return;
             TrackedQuestId = questId;
             SelectedQuestId = questId;

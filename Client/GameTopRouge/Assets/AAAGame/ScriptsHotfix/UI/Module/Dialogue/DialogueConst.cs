@@ -1,4 +1,4 @@
-﻿using AAAGame.ScriptsHotfix.UI.Core;
+using AAAGame.ScriptsHotfix.UI.Core;
 
 namespace AAAGame.ScriptsHotfix.UI.Module.Dialogue
 {
@@ -41,8 +41,6 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Dialogue
         /// <summary>读取对话模块展示文案。</summary>
         public static class Text
         {
-            /// <summary>地图 NPC 的交谈提示。</summary>
-            public static string Interact => GF.Localization.GetString("Dialogue.UI.Interact");
             /// <summary>选择对话结束状态对应的本地化键。</summary>
             /// <param name="status">对话会话结束状态。</param>
             /// <returns>状态对应的稳定资源键。</returns>

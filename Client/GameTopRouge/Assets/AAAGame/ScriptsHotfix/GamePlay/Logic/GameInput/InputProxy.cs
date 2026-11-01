@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Threading;
 using AAAGame.ScriptsHotfix.GamePlay.Logic.ProxyManager;
 using AAAGame.ScriptsHotfix.GamePlay.Logic.Unit;
 using Fantasy;
@@ -57,15 +59,28 @@ namespace AAAGame.ScriptsHotfix.GamePlay.Logic.GameInput
         /// 重建或追赶历史帧时阻止新的本地操作进入权威输入流。
         /// </summary>
         private bool _roomInputBlocked;
-        /// <summary>本地剧情会话独立占用输入，不影响权威帧执行。</summary>
-        private bool _dialogueInputBlocked;
+        /// <summary>持有本地输入锁的界面或交互数量。</summary>
+        private int _playerInputLockCount;
+        /// <summary>使清理前发出的锁句柄失效，避免旧会话释放新会话的锁。</summary>
+        private int _inputLockGeneration;
 
-        /// <summary>设置本地对话输入限制并清除尚未提交的操作。</summary>
-        /// <param name="blocked">是否禁止移动和技能采集。</param>
-        public void SetDialogueInputBlocked(bool blocked)
+        /// <summary>当前是否有本地交互占用玩家输入。</summary>
+        public bool IsPlayerInputLocked => _playerInputLockCount > 0;
+        /// <summary>地图交互是否应暂停。</summary>
+        public bool IsMapInteractionBlocked => IsPlayerInputLocked || _roomInputBlocked;
+
+        /// <summary>获取一份可独立释放的本地输入锁。</summary>
+        /// <returns>释放时只归还本次获取的输入锁。</returns>
+        public IDisposable AcquirePlayerInputLock()
         {
-            _dialogueInputBlocked = blocked;
-            if (!blocked) return;
+            _playerInputLockCount++;
+            if (_playerInputLockCount == 1) ClearPendingLocalInput();
+            return new PlayerInputLock(this, _inputLockGeneration);
+        }
+
+        /// <summary>清除待处理输入并立即提交停止移动。</summary>
+        private void ClearPendingLocalInput()
+        {
             _roomHorizontal = _roomVertical = 0;
             _pendingSkillKeys?.Clear();
             if (!IsRoomMode())
@@ -73,6 +88,32 @@ namespace AAAGame.ScriptsHotfix.GamePlay.Logic.GameInput
                 ReleaseInputObjects(_inputObjs);
                 // 立即提交停止移动，避免对话遮住摇杆后角色沿旧方向继续行走。
                 if (_inputObjs != null) AddLocalMovementInput(0, 0);
+            }
+        }
+
+        /// <summary>释放对应代次的一份本地输入锁。</summary>
+        /// <param name="generation">获取锁时的输入状态代次。</param>
+        private void ReleasePlayerInputLock(int generation)
+        {
+            if (generation != _inputLockGeneration || _playerInputLockCount <= 0) return;
+            _playerInputLockCount--;
+        }
+
+        /// <summary>可重复释放且不会影响其他会话的输入锁句柄。</summary>
+        private sealed class PlayerInputLock : IDisposable
+        {
+            private InputProxy _owner;
+            private readonly int _generation;
+
+            public PlayerInputLock(InputProxy owner, int generation)
+            {
+                _owner = owner;
+                _generation = generation;
+            }
+
+            public void Dispose()
+            {
+                Interlocked.Exchange(ref _owner, null)?.ReleasePlayerInputLock(_generation);
             }
         }
 
@@ -110,7 +151,7 @@ namespace AAAGame.ScriptsHotfix.GamePlay.Logic.GameInput
         /// <param name="vertical">归一化垂直移动方向，合法范围为 [-1, 1]。</param>
         public void Input(float horizontal, float vertical)
         {
-            if (_dialogueInputBlocked) { horizontal = 0; vertical = 0; }
+            if (IsPlayerInputLocked) { horizontal = 0; vertical = 0; }
             if (IsRoomMode())
             {
                 if (_roomInputBlocked)
@@ -131,7 +172,7 @@ namespace AAAGame.ScriptsHotfix.GamePlay.Logic.GameInput
         /// <param name="key">要执行的技能按键；KeyCode.None 会被忽略。</param>
         public void Input(KeyCode key)
         {
-            if (_dialogueInputBlocked) return;
+            if (IsPlayerInputLocked) return;
             if (IsRoomMode())
             {
                 if (_roomInputBlocked)
@@ -341,7 +382,8 @@ namespace AAAGame.ScriptsHotfix.GamePlay.Logic.GameInput
         /// </summary>
         private void ResetInputState()
         {
-            _dialogueInputBlocked = false;
+            _playerInputLockCount = 0;
+            _inputLockGeneration++;
             ReleaseInputObjects(_inputObjs);
             _pendingSkillKeys?.Clear();
             _hasPreparedFrameInput = false;

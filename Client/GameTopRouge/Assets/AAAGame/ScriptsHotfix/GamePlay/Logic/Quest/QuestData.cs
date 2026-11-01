@@ -4,7 +4,7 @@ using cfg.Quest;
 using Cysharp.Threading.Tasks;
 using ItemTables = cfg.item;
 
-namespace AAAGame.ScriptsHotfix.GamePlay.Quest
+namespace AAAGame.ScriptsHotfix.GamePlay.Logic.Quest
 {
     /// <summary>集中加载本地 Luban 任务表，并提供按任务和目标组查询配置的接口。</summary>
     public sealed class QuestData

@@ -14,32 +14,66 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Dialogue
     {
         /// <summary>每秒显示的可见字符数。</summary>
         private const float CharactersPerSecond = 30;
+        private readonly TMP_Text[] m_OptionTexts = new TMP_Text[4];
+        private readonly UGF_Image[] m_OptionImages = new UGF_Image[4];
+        private readonly Outline[] m_OptionOutlines = new Outline[4];
+        private TMP_Text m_HistoryButtonText;
+        private TMP_Text m_HistoryBackButtonText;
+        private RectTransform m_BodyRect;
+        /// <summary>仅从容器绑定面板控件。</summary>
+        /// <summary>从面板容器绑定显示和交互控件。</summary>
+        protected override void RegisterUI()
+        {
+            #region Auto Bind
+            m_SafeArea = PanelUIContainer.Get<RectTransform>("m_SafeArea");
+            m_Portrait = PanelUIContainer.Get<UGF_Image>("m_Portrait");
+            m_Speaker = PanelUIContainer.Get<TMP_Text>("m_Speaker");
+            m_Body = PanelUIContainer.Get<TMP_Text>("m_Body");
+            m_ContinueButton = PanelUIContainer.Get<UGF_Button>("m_ContinueButton");
+            m_Prompt = PanelUIContainer.Get<TMP_Text>("m_Prompt");
+            m_OptionButtons = new UGF_Button[4];
+            for (int i = 0; i < 4; i++)
+            {
+                m_OptionButtons[i] = PanelUIContainer.Get<UGF_Button>("m_OptionButtons" + i);
+                m_OptionTexts[i] = PanelUIContainer.Get<TMP_Text>("m_OptionText" + i);
+                m_OptionImages[i] = PanelUIContainer.Get<UGF_Image>("m_OptionImage" + i);
+                m_OptionOutlines[i] = PanelUIContainer.Get<Outline>("m_OptionOutline" + i);
+            }
+            m_HistoryButton = PanelUIContainer.Get<UGF_Button>("m_HistoryButton");
+            m_HistoryBackButton = PanelUIContainer.Get<UGF_Button>("m_HistoryBackButton");
+            m_HistoryRoot = PanelUIContainer.Get<Transform>("m_HistoryRoot");
+            m_HistoryText = PanelUIContainer.Get<TMP_Text>("m_HistoryText");
+            m_HistoryButtonText = PanelUIContainer.Get<TMP_Text>("m_HistoryButtonText");
+            m_HistoryBackButtonText = PanelUIContainer.Get<TMP_Text>("m_HistoryBackButtonText");
+            m_BodyRect = PanelUIContainer.Get<RectTransform>("m_BodyRect");
+            #endregion
+        }
+        protected override void RegisterEvent() => WireButtons();
+
         /// <summary>安全区容器。</summary>
-        public RectTransform SafeArea;
+        private RectTransform m_SafeArea;
         /// <summary>头像图像。</summary>
-        public Image Portrait;
+        private UGF_Image m_Portrait;
         /// <summary>统一占位头像。</summary>
         public Sprite Placeholder;
         /// <summary>说话者名称。</summary>
-        public TMP_Text Speaker;
+        private TMP_Text m_Speaker;
         /// <summary>正文区域，使用 TMP 实际排版分页。</summary>
-        public TMP_Text Body;
+        private TMP_Text m_Body;
         /// <summary>正文继续按钮。</summary>
-        public Button ContinueButton;
+        private UGF_Button m_ContinueButton;
         /// <summary>推进或选择提示。</summary>
-        public TMP_Text Prompt;
+        private TMP_Text m_Prompt;
         /// <summary>最多四个独立选项按钮。</summary>
-        public Button[] OptionButtons;
+        private UGF_Button[] m_OptionButtons;
         /// <summary>历史入口。</summary>
-        public Button HistoryButton;
+        private UGF_Button m_HistoryButton;
         /// <summary>历史返回按钮。</summary>
-        public Button HistoryBackButton;
+        private UGF_Button m_HistoryBackButton;
         /// <summary>历史遮罩根节点。</summary>
-        public GameObject HistoryRoot;
+        private Transform m_HistoryRoot;
         /// <summary>可滚动的历史正文。</summary>
-        public TMP_Text HistoryText;
-        /// <summary>正式资源模式使用 GF 本地化，演示注入已生成的数据。</summary>
-        internal Func<string, string> Localize;
+        private TMP_Text m_HistoryText;
         /// <summary>当前控制器。</summary>
         private DialogueController _controller;
         /// <summary>当前配置集合。</summary>
@@ -72,10 +106,6 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Dialogue
         private bool _choicesVisible;
         /// <summary>控制器绑定后才接受输入。</summary>
         private bool _bound;
-        /// <summary>读取本地化文案。</summary>
-        /// <param name="key">稳定文案键。</param>
-        /// <returns>对应的玩家文案。</returns>
-        internal string Text(string key) => Localize != null ? Localize(key) : GF.Localization.GetText(key);
         /// <summary>在演示和正式表单打开时共用初始化。</summary>
         /// <param name="controller">当前会话控制器。</param>
         /// <param name="data">已校验的配置。</param>
@@ -84,10 +114,14 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Dialogue
             _controller = controller;
             _data = data;
             _bound = true;
-            WireButtons();
-            HistoryRoot.SetActive(false);
-            HistoryButton.GetComponentInChildren<TMP_Text>().text = Text(DialogueConst.LocalizationKey.History);
-            HistoryBackButton.GetComponentInChildren<TMP_Text>().text = Text(DialogueConst.LocalizationKey.CloseHistory);
+            if (m_Body == null)
+            {
+                RegisterUI();
+                RegisterEvent();
+            }
+            m_HistoryRoot.gameObject.SetActive(false);
+            m_HistoryButtonText.text = GF.Localization.GetText(DialogueConst.LocalizationKey.History);
+            m_HistoryBackButtonText.text = GF.Localization.GetText(DialogueConst.LocalizationKey.CloseHistory);
             FitSafeArea();
         }
         /// <summary>绑定一次按钮回调，避免对象池重开重复监听。</summary>
@@ -95,13 +129,13 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Dialogue
         {
             if (_wired) return;
             _wired = true;
-            ContinueButton.onClick.AddListener(AdvancePage);
-            HistoryButton.onClick.AddListener(OpenHistory);
-            HistoryBackButton.onClick.AddListener(CloseHistory);
-            for (int i = 0; i < OptionButtons.Length; i++)
+            m_ContinueButton.SetClickListener(AdvancePage);
+            m_HistoryButton.SetClickListener(OpenHistory);
+            m_HistoryBackButton.SetClickListener(CloseHistory);
+            for (int i = 0; i < m_OptionButtons.Length; i++)
             {
                 int index = i;
-                OptionButtons[i].onClick.AddListener(() => Choose(index));
+                m_OptionButtons[i].SetClickListener(() => Choose(index));
             }
         }
         /// <summary>显示可见节点，初始化头像、名称和第一页。</summary>
@@ -109,20 +143,20 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Dialogue
         internal void ShowNode(DialogueNode node)
         {
             _choicesVisible = false;
-            foreach (var button in OptionButtons) button.gameObject.SetActive(false);
+            foreach (var button in m_OptionButtons) button.gameObject.SetActive(false);
             _options = _data.GetOptions(node.Id);
             var speaker = _data.Npcs.GetOrDefault(node.NpcId);
-            Speaker.text = speaker == null ? string.Empty : Text(speaker.Name);
-            Speaker.gameObject.SetActive(speaker != null);
-            Portrait.gameObject.SetActive(speaker != null);
-            var bodyRect = Body.rectTransform;
+            m_Speaker.text = speaker == null ? string.Empty : GF.Localization.GetText(speaker.Name);
+            m_Speaker.gameObject.SetActive(speaker != null);
+            m_Portrait.gameObject.SetActive(speaker != null);
+            var bodyRect = m_BodyRect;
             bodyRect.offsetMin = new Vector2(speaker == null ? 40 : 248, 52);
             bodyRect.offsetMax = new Vector2(-40, speaker == null ? -40 : -82);
             SetPortrait(speaker?.PortraitAsset);
-            Body.richText = false;
-            Body.text = Text(node.TextKey);
-            Body.maxVisibleCharacters = int.MaxValue;
-            Body.ForceMeshUpdate();
+            m_Body.richText = false;
+            m_Body.text = GF.Localization.GetText(node.TextKey);
+            m_Body.maxVisibleCharacters = int.MaxValue;
+            m_Body.ForceMeshUpdate();
             _page = 1;
             BeginPage();
         }
@@ -131,7 +165,7 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Dialogue
         private void SetPortrait(string path)
         {
             ReleasePortrait();
-            Portrait.sprite = Placeholder;
+            m_Portrait.sprite = Placeholder;
             int version = _portraitVersion;
             if (string.IsNullOrEmpty(path)) return;
             GF.Resource.LoadAsset(path, typeof(Sprite), new LoadAssetCallbacks((name, asset, duration, context) =>
@@ -142,7 +176,7 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Dialogue
                     return;
                 }
                 _loadedPortrait = asset as Sprite;
-                Portrait.sprite = _loadedPortrait != null ? _loadedPortrait : Placeholder;
+                m_Portrait.sprite = _loadedPortrait != null ? _loadedPortrait : Placeholder;
             }, (name, status, message, context) => Debug.LogWarning($"Dialogue portrait unavailable: {name}: {message}")));
         }
         /// <summary>清理头像资源并使旧加载回调失效。</summary>
@@ -155,14 +189,14 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Dialogue
         /// <summary>按 TMP 实际分页信息启动当前页。</summary>
         private void BeginPage()
         {
-            var page = Body.textInfo.pageInfo[_page - 1];
+            var page = m_Body.textInfo.pageInfo[_page - 1];
             _firstCharacter = page.firstCharacterIndex;
-            _lastCharacter = Body.textInfo.characterCount == 0 ? 0 : page.lastCharacterIndex + 1;
+            _lastCharacter = m_Body.textInfo.characterCount == 0 ? 0 : page.lastCharacterIndex + 1;
             _visible = _firstCharacter;
-            Body.pageToDisplay = _page;
-            Body.maxVisibleCharacters = _firstCharacter;
+            m_Body.pageToDisplay = _page;
+            m_Body.maxVisibleCharacters = _firstCharacter;
             _historyIndex = DialogueModel.Instance.AddHistory(string.Empty);
-            Prompt.text = string.Empty;
+            m_Prompt.text = string.Empty;
         }
         /// <summary>每帧推进文字并处理不依赖 EventSystem 提交的键盘输入。</summary>
         private void Update()
@@ -171,20 +205,20 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Dialogue
             FitSafeArea();
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                if (HistoryRoot.activeSelf) CloseHistory();
+                if (m_HistoryRoot.gameObject.activeSelf) CloseHistory();
                 else _controller.Finish(DialogueStatus.Cancelled);
                 return;
             }
-            if (HistoryRoot.activeSelf) return;
+            if (m_HistoryRoot.gameObject.activeSelf) return;
             if (!_choicesVisible)
             {
                 _visible = Mathf.Min(_lastCharacter, _visible + Time.unscaledDeltaTime * CharactersPerSecond);
-                Body.maxVisibleCharacters = Mathf.FloorToInt(_visible);
+                m_Body.maxVisibleCharacters = Mathf.FloorToInt(_visible);
                 UpdateHistory();
-                if (Body.maxVisibleCharacters >= _lastCharacter)
+                if (m_Body.maxVisibleCharacters >= _lastCharacter)
                 {
-                    if (_page == Body.textInfo.pageCount && _options.Length > 0) ShowChoices();
-                    else Prompt.text = Text(DialogueConst.LocalizationKey.Continue);
+                    if (_page == m_Body.textInfo.pageCount && _options.Length > 0) ShowChoices();
+                    else m_Prompt.text = GF.Localization.GetText(DialogueConst.LocalizationKey.Continue);
                 }
                 if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return)) AdvancePage();
             }
@@ -198,26 +232,26 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Dialogue
         /// <summary>记录已经实际显示的字符，取消时不暴露后续台词。</summary>
         private void UpdateHistory()
         {
-            int count = Body.maxVisibleCharacters;
+            int count = m_Body.maxVisibleCharacters;
             if (count <= _firstCharacter) return;
-            var first = Body.textInfo.characterInfo[_firstCharacter];
-            var last = Body.textInfo.characterInfo[Math.Min(count, _lastCharacter) - 1];
-            string prefix = string.IsNullOrEmpty(Speaker.text) ? string.Empty : Speaker.text + ": ";
-            DialogueModel.Instance.History[_historyIndex] = prefix + Body.text.Substring(first.index, last.index + last.stringLength - first.index);
+            var first = m_Body.textInfo.characterInfo[_firstCharacter];
+            var last = m_Body.textInfo.characterInfo[Math.Min(count, _lastCharacter) - 1];
+            string prefix = string.IsNullOrEmpty(m_Speaker.text) ? string.Empty : m_Speaker.text + ": ";
+            DialogueModel.Instance.History[_historyIndex] = prefix + m_Body.text.Substring(first.index, last.index + last.stringLength - first.index);
         }
         /// <summary>补全、翻页或推进；选项出现后不推进台词。</summary>
         private void AdvancePage()
         {
-            if (!_bound || HistoryRoot.activeSelf || _choicesVisible) return;
-            if (Body.maxVisibleCharacters < _lastCharacter)
+            if (!_bound || m_HistoryRoot.gameObject.activeSelf || _choicesVisible) return;
+            if (m_Body.maxVisibleCharacters < _lastCharacter)
             {
                 _visible = _lastCharacter;
-                Body.maxVisibleCharacters = _lastCharacter;
+                m_Body.maxVisibleCharacters = _lastCharacter;
                 UpdateHistory();
-                if (_page == Body.textInfo.pageCount && _options.Length > 0) ShowChoices();
+                if (_page == m_Body.textInfo.pageCount && _options.Length > 0) ShowChoices();
                 return;
             }
-            if (_page < Body.textInfo.pageCount) { _page++; BeginPage(); }
+            if (_page < m_Body.textInfo.pageCount) { _page++; BeginPage(); }
             else _controller.Advance();
         }
         /// <summary>正文显示完毕后创建选项焦点，阻止同帧确认。</summary>
@@ -225,11 +259,11 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Dialogue
         {
             _choicesVisible = true;
             _choiceFrame = Time.frameCount;
-            Prompt.text = Text(DialogueConst.LocalizationKey.Choose);
+            m_Prompt.text = GF.Localization.GetText(DialogueConst.LocalizationKey.Choose);
             for (int i = 0; i < _options.Length; i++)
             {
-                OptionButtons[i].gameObject.SetActive(true);
-                OptionButtons[i].GetComponentInChildren<TMP_Text>().text = Text(_options[i].TextKey);
+                m_OptionButtons[i].gameObject.SetActive(true);
+                m_OptionTexts[i].text = GF.Localization.GetText(_options[i].TextKey);
             }
             SetSelected(0);
         }
@@ -240,10 +274,10 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Dialogue
             _selected = index;
             for (int i = 0; i < _options.Length; i++)
             {
-                OptionButtons[i].GetComponent<Image>().color = i == index ? Color.white : new Color(.8f, .8f, .8f, 1);
-                var outline = OptionButtons[i].GetComponent<Outline>();
+                m_OptionImages[i].color = i == index ? Color.white : new Color(.8f, .8f, .8f, 1);
+                var outline = m_OptionOutlines[i];
                 if (outline != null) outline.enabled = i == index;
-                OptionButtons[i].GetComponentInChildren<TMP_Text>().fontStyle = i == index ? FontStyles.Bold : FontStyles.Normal;
+                m_OptionTexts[i].fontStyle = i == index ? FontStyles.Bold : FontStyles.Normal;
             }
             // 所有提交由本组件消费，避免 EventSystem 再次提交到下一节点。
             if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(null);
@@ -252,7 +286,7 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Dialogue
         /// <param name="index">选项数组索引。</param>
         private void Choose(int index)
         {
-            if (!_bound || !_choicesVisible || HistoryRoot.activeSelf || Time.frameCount <= _choiceFrame || index < 0 || index >= _options.Length) return;
+            if (!_bound || !_choicesVisible || m_HistoryRoot.gameObject.activeSelf || Time.frameCount <= _choiceFrame || index < 0 || index >= _options.Length) return;
             _choicesVisible = false;
             _controller.Choose(_options[index].Id);
         }
@@ -261,18 +295,18 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Dialogue
         {
             if (!_bound) return;
             UpdateHistory();
-            HistoryText.text = string.Join("\n\n", DialogueModel.Instance.History);
-            HistoryRoot.SetActive(true);
+            m_HistoryText.text = string.Join("\n\n", DialogueModel.Instance.History);
+            m_HistoryRoot.gameObject.SetActive(true);
         }
         /// <summary>返回正在播放的页面。</summary>
-        private void CloseHistory() => HistoryRoot.SetActive(false);
+        private void CloseHistory() => m_HistoryRoot.gameObject.SetActive(false);
         /// <summary>将所有内容限定在设备安全区内。</summary>
         private void FitSafeArea()
         {
             Rect safe = Screen.safeArea;
-            SafeArea.anchorMin = new Vector2(safe.xMin / Screen.width, safe.yMin / Screen.height);
-            SafeArea.anchorMax = new Vector2(safe.xMax / Screen.width, safe.yMax / Screen.height);
-            SafeArea.offsetMin = SafeArea.offsetMax = Vector2.zero;
+            m_SafeArea.anchorMin = new Vector2(safe.xMin / Screen.width, safe.yMin / Screen.height);
+            m_SafeArea.anchorMax = new Vector2(safe.xMax / Screen.width, safe.yMax / Screen.height);
+            m_SafeArea.offsetMin = m_SafeArea.offsetMax = Vector2.zero;
         }
         /// <summary>由控制器统一关闭界面。</summary>
         internal void Release()

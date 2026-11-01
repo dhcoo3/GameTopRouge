@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using AAAGame.ScriptsHotfix.GamePlay;
+using AAAGame.ScriptsHotfix.Bridge;
 using AAAGame.ScriptsHotfix.UI.Core;
 using AAAGame.ScriptsHotfix.UI.Module.FightShare;
 using Cysharp.Threading.Tasks;
@@ -303,7 +303,7 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Login
             _returningLogin = true;
             try
             {
-                GamePlayFacade.Instance.End();
+                UIToGamePlayerBridge.Instance.EndGamePlay();
                 FightShareModel.Instance.ResetAfterLogout();
                 GF.UI.CloseAllLoadingUIForms();
                 GF.UI.CloseAllLoadedUIForms();
@@ -314,9 +314,17 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Login
             }
             catch (Exception exception)
             {
-                Log.Error("返回登录页失败：{0}", exception.GetType().Name);
+                Log.Error("返回登录页失败：{0}", exception);
             }
             finally { _returningLogin = false; }
+        }
+
+        /// <summary>恢复登录界面并显示认证断开原因。</summary>
+        /// <param name="message">需要显示给玩家的原因。</param>
+        /// <returns>登录界面恢复完成后的异步任务。</returns>
+        public UniTask ReturnToLoginAsync(string message)
+        {
+            return ReturnLoginAsync(message);
         }
 
         /// <summary>为底层 RPC 设置等待上限，并观察超时后迟到任务的异常。</summary>

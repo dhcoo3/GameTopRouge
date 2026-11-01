@@ -7,7 +7,7 @@ using Cysharp.Threading.Tasks;
 using Fantasy;
 using cfg.Quest;
 
-namespace AAAGame.ScriptsHotfix.GamePlay.Quest
+namespace AAAGame.ScriptsHotfix.GamePlay.Logic.Quest
 {
     /// <summary>玩家进度 RPC 使用的稳定错误编号。</summary>
     public enum ProgressErrorCode : uint
@@ -183,11 +183,26 @@ namespace AAAGame.ScriptsHotfix.GamePlay.Quest
                 await QuestData.LoadAsync().AttachExternalCancellation(token);
                 if (GF.GameNetwork?.Session == null || GF.GameNetwork.Session.IsDisposed)
                     throw new ProgressServiceException((uint)ProgressErrorCode.StorageUnavailable, "Progress network session is not connected.");
+                var session = GF.GameNetwork.Session;
                 using (C2G_LoadPlayerProgress request = C2G_LoadPlayerProgress.Create())
                 {
                     request.MapId = mapId;
-                    using (G2C_LoadPlayerProgress response = (G2C_LoadPlayerProgress)await GF.GameNetwork.Session.Call(request))
+                    G2C_LoadPlayerProgress rpcResponse;
+                    try
                     {
+                        rpcResponse = (G2C_LoadPlayerProgress)await session.Call(request);
+                    }
+                    catch (Exception) when (session.IsDisposed || !ReferenceEquals(GF.GameNetwork?.Session, session))
+                    {
+                        throw new ProgressServiceException((uint)ProgressErrorCode.StorageUnavailable,
+                            "Progress request was interrupted because the network session closed.");
+                    }
+
+                    using (G2C_LoadPlayerProgress response = rpcResponse)
+                    {
+                        if (session.IsDisposed || !ReferenceEquals(GF.GameNetwork?.Session, session))
+                            throw new ProgressServiceException((uint)ProgressErrorCode.StorageUnavailable,
+                                "Progress response arrived after the network session closed.");
                         if (response.ErrorCode != (uint)ProgressErrorCode.Success) throw CreateException(response.ErrorCode, response.ErrorMessage);
                         PlayerProgressSnapshot snapshot = Copy(response);
                         ApplySnapshot(snapshot);

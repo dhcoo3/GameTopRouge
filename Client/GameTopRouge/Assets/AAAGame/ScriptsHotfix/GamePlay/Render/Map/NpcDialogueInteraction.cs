@@ -3,10 +3,8 @@ using System.Threading;
 using AAAGame.ScriptsHotfix.GamePlay.Logic.GameInput;
 using AAAGame.ScriptsHotfix.GamePlay.Logic.ProxyManager;
 using AAAGame.ScriptsHotfix.GamePlay.Logic.Unit;
-using AAAGame.ScriptsHotfix.GamePlay.Quest;
-using AAAGame.ScriptsHotfix.UI.Module.Dialogue;
-using AAAGame.ScriptsHotfix.UI.Module.Login;
-using AAAGame.ScriptsHotfix.UI.Module.Quest;
+using AAAGame.ScriptsHotfix.GamePlay.Logic.Quest;
+using AAAGame.ScriptsHotfix.Bridge;
 using cfg.Map;
 using Cysharp.Threading.Tasks;
 using TMPro;
@@ -67,7 +65,7 @@ namespace AAAGame.ScriptsHotfix.GamePlay.Render.Map
                 _prompt.rectTransform.sizeDelta = new Vector2(6, 1);
                 _prompt.GetComponent<MeshRenderer>().sortingOrder = 1000;
             }
-            _prompt.text = DialogueConst.Text.Interact;
+            _prompt.text = GamePlayToUIBridge.Instance.NpcDialoguePrompt;
             _prompt.gameObject.SetActive(false);
         }
 
@@ -75,22 +73,30 @@ namespace AAAGame.ScriptsHotfix.GamePlay.Render.Map
         private void Update()
         {
             if (_marker == null || _dialogueId == 0 || _prompt == null) return;
-            if (QuestView.Instance.IsBlockingMapInteraction)
-            { _prompt.gameObject.SetActive(false); return; }
+            bool authenticated = GamePlayToUIBridge.Instance.IsPlayerAuthenticated;
+            if (!authenticated)
+            {
+                _prompt.gameObject.SetActive(false);
+                if (_pending) _lifetime?.Cancel();
+                return;
+            }
+            InputProxy input = GameProxyManger.Instance.GetProxy<InputProxy>();
             bool questBound = PlayerProgressService.HasQuestDialogueInteraction(_marker.mapId, _marker.npcId, _dialogueId);
             bool questObjectiveActive = !questBound ||
                 PlayerProgressService.FindActiveDialogueObjective(_marker.mapId, _marker.npcId, _dialogueId) != null ||
                 PlayerProgressService.FindAcceptableQuestForNpc(_marker.mapId, _marker.npcId) > 0;
             var role = GameProxyManger.Instance.GetProxy<UnitProxy>()?.MainRole;
             bool alive = role?.Data?.Resource != null && role.Data.Resource.hp > 0;
-            if (_pending && (!alive || !LoginModel.Instance.IsAuthenticated)) _lifetime?.Cancel();
+            if (_pending && !alive) _lifetime?.Cancel();
+            if (input?.IsMapInteractionBlocked == true)
+            { _prompt.gameObject.SetActive(false); return; }
             bool near = false;
             if (alive && role.RoleBehaviour != null)
             {
                 var position = role.RoleBehaviour.Position;
                 near = Vector2.Distance(new Vector2((float)position.x, (float)position.y), transform.position) <= _marker.radius;
             }
-            bool available = questObjectiveActive && near && !_pending && !DialogueView.Instance.IsPlaying;
+            bool available = questObjectiveActive && near && !_pending;
             _prompt.gameObject.SetActive(available);
             if (available && Input.GetKeyDown(KeyCode.E)) TalkAsync(_lifetime.Token).Forget(Debug.LogException);
         }
@@ -108,11 +114,11 @@ namespace AAAGame.ScriptsHotfix.GamePlay.Render.Map
             if (questBound && objective == null && acceptQuestId == 0) return;
             _pending = true;
             InputProxy input = GameProxyManger.Instance.GetProxy<InputProxy>();
-            input?.SetDialogueInputBlocked(true);
+            using IDisposable inputLock = input?.AcquirePlayerInputLock();
             try
             {
-                DialogueResult result = await DialogueView.Instance.PlayAsync(_dialogueId, token);
-                if (result.Status != DialogueStatus.Completed) return;
+                GamePlayToUIBridge.DialoguePlaybackResult result = await GamePlayToUIBridge.Instance.PlayDialogueAsync(_dialogueId, token);
+                if (result.Status != GamePlayToUIBridge.DialoguePlaybackStatus.Completed) return;
                 if (objective != null)
                 {
                     await PlayerProgressService.SubmitEventAsync(new PlayerProgressEvent
@@ -140,7 +146,6 @@ namespace AAAGame.ScriptsHotfix.GamePlay.Render.Map
             catch (Exception exception) { Debug.LogWarning($"NPC dialogue interaction failed: {exception.Message}"); }
             finally
             {
-                input?.SetDialogueInputBlocked(false);
                 _pending = false;
             }
         }

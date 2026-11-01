@@ -1,5 +1,6 @@
+using System;
+using AAAGame.ScriptsHotfix.Bridge;
 using TMPro;
-using AAAGame.ScriptsHotfix.GamePlay.Quest;
 using UnityEngine;
 using UnityEngine.UI;
 using Cysharp.Threading.Tasks;
@@ -13,25 +14,59 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Quest
         private QuestController _controller;
         /// <summary>当前正在展示的任务配置。</summary>
         private cfg.Quest.QuestDefinition _quest;
+        #region Auto Create
         /// <summary>确认失败时显示的错误文案控件。</summary>
-        private TMP_Text _error;
+        private TMP_Text m_Error;
         /// <summary>显示任务简报标题的控件。</summary>
-        private TMP_Text _title;
+        private TMP_Text m_Title;
         /// <summary>显示任务简报正文的控件。</summary>
-        private TMP_Text _body;
+        private TMP_Text m_Body;
         /// <summary>提交简报确认的按钮。</summary>
-        private Button _confirm;
+        private UGF_Button m_Confirm;
+        /// <summary>确认按钮的文本控件。</summary>
+        private TMP_Text m_ConfirmLabel;
+        #endregion
         /// <summary>确认请求尚未返回时屏蔽重复输入。</summary>
         private bool _busy;
-        /// <summary>标记简报控件是否已经创建。</summary>
+        /// <summary>Prefab 控件是否已成功绑定。</summary>
         private bool _built;
+        /// <summary>当前简报面板独立持有的玩家输入锁。</summary>
+        private IDisposable _inputLock;
 
-        /// <summary>首次打开表单时创建简报内容和确认按钮。</summary>
-        /// <param name="userData">UI 框架传入的表单数据。</param>
-        protected override void OnInit(object userData)
+        /// <summary>为本次打开绑定交互。</summary>
+        protected override void RegisterEvent()
         {
-            base.OnInit(userData);
-            if (!_built) Build();
+            m_Confirm.SetClickListener(Confirm);
+        }
+
+        /// <summary>从面板容器绑定显示和交互控件。</summary>
+        protected override void RegisterUI()
+        {
+            #region Auto Bind
+            m_Error = PanelUIContainer.Get<TMP_Text>("m_Error");
+            m_Title = PanelUIContainer.Get<TMP_Text>("m_Title");
+            m_Body = PanelUIContainer.Get<TMP_Text>("m_Body");
+            m_Confirm = PanelUIContainer.Get<UGF_Button>("m_Confirm");
+            m_ConfirmLabel = PanelUIContainer.Get<TMP_Text>("m_ConfirmLabel");
+                _built = true;
+            #endregion
+        }
+
+        /// <summary>每次打开简报时注册确认按钮。</summary>
+        /// <param name="userData">UI 框架传入的表单数据。</param>
+        protected override void OnOpen(object userData)
+        {
+            base.OnOpen(userData);
+
+            if (!_built) return;
+
+            _inputLock?.Dispose();
+            _inputLock = UIToGamePlayerBridge.Instance.AcquirePlayerInputLock();
+            _controller = null;
+            _quest = null;
+            _busy = false;
+            m_Confirm.interactable = true;
+            m_Error.text = string.Empty;
         }
 
         /// <summary>绑定当前任务并刷新简报标题和正文。</summary>
@@ -41,9 +76,10 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Quest
         {
             _controller = controller;
             _quest = quest;
-            _title.text = QuestConst.Text.BriefingTitle;
-            _body.text = QuestUiFactory.Localize(quest.BriefingTextKey);
-            _confirm.GetComponentInChildren<TMP_Text>().text = QuestConst.Text.Confirm;
+            m_Title.text = GF.Localization.GetText("Quest.UI.BriefingTitle");
+            m_Body.text = GF.Localization.GetText(quest.BriefingTextKey);
+            m_Error.text = string.Empty;
+            m_ConfirmLabel.text = GF.Localization.GetText("Quest.UI.Confirm");
         }
 
         /// <summary>设置确认按钮忙碌状态，避免重复提交。</summary>
@@ -51,13 +87,13 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Quest
         internal void SetBusy(bool value)
         {
             _busy = value;
-            if (_confirm != null) _confirm.interactable = !value;
+            if (m_Confirm != null) m_Confirm.interactable = !value;
         }
         /// <summary>显示服务端确认失败的提示并恢复按钮。</summary>
         /// <param name="value">由任务模块本地化入口提供的错误文案。</param>
         internal void SetError(string value)
         {
-            if (_error != null) _error.text = value;
+            if (m_Error != null) m_Error.text = value;
             SetBusy(false);
         }
 
@@ -74,20 +110,16 @@ namespace AAAGame.ScriptsHotfix.UI.Module.Quest
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return)) Confirm();
         }
 
-        /// <summary>创建任务简报的遮罩、正文、错误提示和确认按钮。</summary>
-        private void Build()
+        /// <summary>关闭简报时移除确认按钮监听。</summary>
+        /// <param name="isShutdown">是否由 UI 系统关闭整个应用。</param>
+        /// <param name="userData">UI 框架传入的关闭数据。</param>
+        protected override void OnClose(bool isShutdown, object userData)
         {
-            _built = true;
-            var rect = GetComponent<RectTransform>(); rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one; rect.offsetMin = rect.offsetMax = Vector2.zero;
-            var shade = QuestUiFactory.Image("BriefingShade", transform, Vector2.zero, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Color(0, 0, 0, 0.84f));
-            shade.rectTransform.anchorMin = Vector2.zero; shade.rectTransform.anchorMax = Vector2.one; shade.rectTransform.offsetMin = shade.rectTransform.offsetMax = Vector2.zero;
-            var frame = QuestUiFactory.Image("BriefingFrame", shade.transform, new Vector2(1180, 650), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Color32(20, 20, 19, 255));
-            QuestUiFactory.Image("BriefingTopRule", frame.transform, new Vector2(1080, 2), new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -86), new Color32(154, 113, 57, 255));
-            _title = QuestUiFactory.Text("BriefingTitle", frame.transform, string.Empty, 30, new Color32(232, 218, 188, 255), new Vector2(1050, 64), new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -28), TextAlignmentOptions.Center);
-            _body = QuestUiFactory.Text("BriefingBody", frame.transform, string.Empty, 24, new Color32(225, 213, 188, 255), new Vector2(1020, 420), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, 10), TextAlignmentOptions.TopLeft);
-            _body.verticalAlignment = VerticalAlignmentOptions.Middle;
-            _error = QuestUiFactory.Text("BriefingError", frame.transform, string.Empty, 17, new Color32(217, 151, 127, 255), new Vector2(780, 35), new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 96), TextAlignmentOptions.Center);
-            _confirm = QuestUiFactory.Button("BriefingConfirm", frame.transform, QuestConst.Text.Confirm, 22, new Vector2(280, 62), new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 30), Confirm);
+            _inputLock?.Dispose();
+            _inputLock = null;
+            _controller = null;
+            _quest = null;
+            base.OnClose(isShutdown, userData);
         }
     }
 }

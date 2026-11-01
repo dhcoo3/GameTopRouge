@@ -62,6 +62,7 @@ namespace AAAGame.ScriptsHotfix.GamePlay
             fightProxy.EnterFight(players, characterId, dungeonType);
         }
 
+        /// <summary>停止玩法更新并释放本局代理与表现层。</summary>
         public void End()
         {
             if (!_isRunning)
@@ -69,11 +70,14 @@ namespace AAAGame.ScriptsHotfix.GamePlay
                 return;
             }
 
+            // 先摘除更新入口，再释放代理，避免断线回调与玩法更新同时访问清理中的数组。
+            while (GF.UpdateActions.Remove(Update)) { }
+            _isRunning = false;
+
             GameProxyManger.Instance.Clear();
             GameRenderManager.Instance.Clear();
-            
-            GF.UpdateActions.Remove(Update);
-            _isRunning = false;
+            _roomBootstrap = null;
+            _time = 0;
         }
 
         /// <summary>单机模式累计的固定逻辑时间，单位为秒。</summary>
@@ -85,6 +89,11 @@ namespace AAAGame.ScriptsHotfix.GamePlay
         /// <param name="deltaTime">本次渲染更新经过的秒数。</param>
         public void Update(float deltaTime)
         {
+            if (!_isRunning)
+            {
+                return;
+            }
+
             if (IsRoomMode)
             {
                 FrameProxy frameProxy = GameProxyManger.Instance.GetProxy<FrameProxy>();

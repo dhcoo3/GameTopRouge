@@ -1,4 +1,4 @@
-﻿using AAAGame.ScriptsHotfix.GamePlay.Logic.Unit.Role;
+﻿using AAAGame.ScriptsHotfix.Bridge;
 using AAAGame.ScriptsHotfix.UI.Module.FightCommon;
 using UnityEngine;
 
@@ -62,7 +62,7 @@ namespace AAAGame.ScriptsHotfix.UI.Module.FightShare
         
         private void EUpdateHpHandler(object sender, GameEvent e)
         {
-            RoleUnit roleData = e.GetParam1<RoleUnit>();
+            GamePlayToUIBridge.RoleHudSnapshot roleData = e.GetParam1<GamePlayToUIBridge.RoleHudSnapshot>();
             if (_fighShareModel.FightUiRoles.TryGetValue(roleData.RoleId, out FightUIRole fightUIRole))
             {
                 if (fightUIRole.Hud == null)
@@ -94,7 +94,9 @@ namespace AAAGame.ScriptsHotfix.UI.Module.FightShare
         
         private void ERoleDieHandler(object sender, GameEvent e)
         {
-         
+            GamePlayToUIBridge.RoleHudSnapshot snapshot = e.GetParam1<GamePlayToUIBridge.RoleHudSnapshot>();
+            if (_fighShareModel.FightUiRoles.TryGetValue(snapshot.RoleId, out FightUIRole fightUIRole) && fightUIRole.Hud != null)
+                fightUIRole.Hud.UpdateHudHp(snapshot);
         }
     }
 }
